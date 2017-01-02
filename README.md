@@ -26,7 +26,7 @@ as dependency for your build script:
 buildscript {
   repositories {
     jcenter()
-   }
+  }
   dependencies {
     classpath 'com.novoda:gradle-build-properties-plugin:0.2'
   }
