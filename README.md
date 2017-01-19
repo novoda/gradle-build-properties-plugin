@@ -11,7 +11,7 @@ file that is not checked in as part of your repo for security reasons
 your application `BuildConfig` or in some resource file.
 
 This plugin aims to provide a simple way to:
-- define handles to properties file in your build script (à la `signingConfig`)
+- define handles to a properties file in your build script (à la `signingConfig`)
 - generate fields in your `BuildConfig` with values from a properties file
 - generate resources with values from a properties file
 - load signing configurations from a properties file
@@ -20,7 +20,7 @@ This plugin aims to provide a simple way to:
 ## Adding to your project
 
 The plugin is deployed to Bintray's JCenter. Ensure it's correctly defined
-as dependency for your build script:
+as a dependency for your build script:
 
 ```gradle
 buildscript {
@@ -54,14 +54,14 @@ accessed via the `getAt` operator:
 Entry entry = buildProperties.secrets['aProperty']
 ```
 
-The value of an `Entry`` can be retrieved via one of its typed accessors:
+The value of an `Entry` can be retrieved via one of its typed accessors:
 
 - `boolean enabled = buildProperties.secrets['x'].boolean`
 - `int count = buildProperties.secrets['x'].int`
 - `double rate = buildProperties.secrets['x'].double`
 - `String label = buildProperties.secrets['x'].string`
 
-Is important to note that values are lazily accessed too (via the internal closure provided in `Entry`).
+It is important to note that values are lazy loaded too (via the internal closure provided in `Entry`).
 Trying to access the value of a specific property could generate an exception
 if the key is missing in the provided properties file, eg:
 ```
@@ -76,7 +76,7 @@ A problem occurred configuring project ':app'.
 ## Features
 
 #### Fallback support
-If a property cannot be found an exception is thrown. It's possible to provide a fallback
+If a property cannot be found an exception is thrown, it's possible to provide a fallback
 value for a given `Entry` via the `or()` operator, defined as:
 
 | | Example |
@@ -98,11 +98,11 @@ A problem occurred while evaluating entry:
 
 #### Override properties at build time
 A property from any file listed in `buildProperties` can be overridden at
-build time specifying a new value as project property (ie: `-PapiKey=newValue`).
+build time specifying a new value as a project property (ie: `-PapiKey=newValue`).
 
 #### Properties inheritance
 It might be useful to have properties files that can recursively include
-another properties files (specified via an `include` property).
+other properties files (specified via an `include` property).
 Inherited properties can be overridden by the including set, just redefine
 the property in the file and its value will be used instead of the one
 from the included set.
@@ -134,8 +134,8 @@ buildProperties {
 
 ## Android-specific features
 
-When applying the `gradle-build-properties-plugin` to an Android project you get access to and
- additional set of poerful features.
+When applying the `gradle-build-properties-plugin` to an Android project you get access to an
+ additional set of powerful features.
 
 #### 1. Store a property value into your `BuildConfig`
 In any product flavor configuration (or `defaultConfig`) you can use
@@ -161,7 +161,7 @@ In any product flavor configuration (or `defaultConfig`) you can use
 ```
 
 #### 3. Load signing configuration from properties
-Instead of inline your passwords and other details in your build script
+Instead of inlining your passwords and other details in your build script
 you can fill the signing configuration using a properties file.
 ```gradle
 signingConfigs {
