@@ -68,14 +68,6 @@ public class AndroidProjectIntegrationTest {
     }
 
     @Test
-    public void shouldOverridePropertyValueInFileWithValueProvidedViaCommandLine() {
-        assertThat(PROJECT.secrets['overridable']).isNotEqualTo(COMMAND_LINE_PROPERTY)
-        [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
-            assertThat(generatedBuildConfig).contains("public static final String OVERRIDABLE = \"$COMMAND_LINE_PROPERTY\";")
-        }
-    }
-
-    @Test
     public void shouldEvaluateFallbackWhenNeeded() {
         EntrySubject.assertThat(PROJECT.secrets['FOO']).willThrow(IllegalArgumentException)
         [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
@@ -119,7 +111,7 @@ public class AndroidProjectIntegrationTest {
                     .withProjectDir(projectDir)
                     .withDebug(true)
                     .forwardStdOutput(new OutputStreamWriter(System.out))
-                    .withArguments('clean', "-Poverridable=$COMMAND_LINE_PROPERTY", 'assemble')
+                    .withArguments('clean', 'assemble')
                     .build()
             debugBuildConfig = new File(buildDir, 'generated/source/buildConfig/debug/com/novoda/buildpropertiesplugin/sample/BuildConfig.java')
             releaseBuildConfig = new File(buildDir, 'generated/source/buildConfig/release/com/novoda/buildpropertiesplugin/sample/BuildConfig.java')

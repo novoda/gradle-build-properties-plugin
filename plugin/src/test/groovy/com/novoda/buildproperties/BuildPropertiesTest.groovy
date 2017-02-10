@@ -42,16 +42,6 @@ class BuildPropertiesTest {
         assertThat(keys).containsExactlyElementsIn(Collections.list(entries.keys))
     }
 
-    @Test
-    public void shouldReturnDifferentValueFromEntriesWhenPropertyValueOverriddenInProject() {
-        project.ext.a = 'x'
-
-        def value = buildProperties['a'].string
-
-        assertThat(value).isNotEqualTo(entries['a'].string)
-        assertThat(value).isEqualTo('x')
-    }
-
     static class TestEntries extends Entries {
 
         private Map<String, ?> entries = [
