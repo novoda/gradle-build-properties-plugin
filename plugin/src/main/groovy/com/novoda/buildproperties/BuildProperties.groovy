@@ -40,11 +40,7 @@ class BuildProperties {
     }
 
     Entry getAt(String key) {
-        if (project.hasProperty(key)) {
-            new Entry(key, { project[key] })
-        } else {
-            entries.getAt(key)
-        }
+        entries.getAt(key)
     }
 
     private static class LazyEntries extends Entries {
