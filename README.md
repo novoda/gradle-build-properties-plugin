@@ -96,10 +96,6 @@ A problem occurred while evaluating entry:
 
 ```
 
-#### Override properties at build time
-A property from any file listed in `buildProperties` can be overridden at
-build time specifying a new value as a project property (ie: `-PapiKey=newValue`).
-
 #### Properties inheritance
 It might be useful to have properties files that can recursively include
 other properties files (specified via an `include` property).
