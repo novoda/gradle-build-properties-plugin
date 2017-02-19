@@ -2,12 +2,12 @@
 [![](https://ci.novoda.com/buildStatus/icon?job=gradle-build-properties-plugin)](https://ci.novoda.com/job/gradle-build-properties-plugin/lastSuccessfulBuild/console) [![](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE.txt) [![Bintray](https://api.bintray.com/packages/novoda/maven/gradle-build-properties-plugin/images/download.svg) ](https://bintray.com/novoda/maven/gradle-build-properties-plugin/_latestVersion)
 
 External properties files support for your build scripts.
- 
+
 ## Description
 
-Sometimes it's necessary to retrieve some information from a properties 
-file that is not checked in as part of your repo for security reasons 
-(keys, credentials, passwords, etc). Such properties need to end up in 
+Sometimes it's necessary to retrieve some information from a properties
+file that is not checked in as part of your repo for security reasons
+(keys, credentials, passwords, etc). Such properties need to end up in
 your application `BuildConfig` or in some resource file.
 
 This plugin aims to provide a simple way to:
@@ -102,6 +102,44 @@ other properties files (specified via an `include` property).
 Inherited properties can be overridden by the including set, just redefine
 the property in the file and its value will be used instead of the one
 from the included set.
+
+For example, given a generic properties file `config.properties`:
+
+```properties
+foo=bar
+aKey=aValue
+```
+
+you can override values and add additional ones in another properties file `debug.properties`:
+
+```properties
+include=/path/to/config.properties
+aNewKey=aNewValue
+aKey=overriddenPreviousValue
+```
+
+Then in your `build.gradle`:
+
+```gradle
+android {
+    ...
+    buildProperties {
+        secrets {
+            file rootProject.file('debug.properties')
+        }
+    }
+
+    ...
+
+    defaultConfig {
+        ...
+        buildConfigProperty 'FOO', buildProperties.secrets['foo'] // bar
+        buildConfigProperty 'A_KEY', buildProperties.secrets['aKey'] // overriddenPreviousValue
+        buildConfigProperty 'A_NEW_KEY', buildProperties.secrets['aNewKey'] // aNewValue
+        ...
+    }
+}
+```
 
 #### Other built-in `Entry` sets
 It's possible to access a system enviroment variable as `Entry` via a predefined set of entries, ie:
