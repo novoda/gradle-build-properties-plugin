@@ -121,14 +121,15 @@ aKey=overriddenPreviousValue
 Then in your `build.gradle`:
 
 ```gradle
-android {
-    ...
-    buildProperties {
-        secrets {
-            file rootProject.file('debug.properties')
-        }
+buildProperties {
+    secrets {
+        file rootProject.file('debug.properties')
     }
+}
 
+...
+
+android {
     ...
 
     defaultConfig {
