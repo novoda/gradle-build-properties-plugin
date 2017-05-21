@@ -29,14 +29,14 @@ buildProperties {
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '24.0.2'
 
     defaultConfig {
-        applicationId "com.novoda.buildpropertiesplugin.sample"
+        applicationId 'com.novoda.buildpropertiesplugin.sample'
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
         buildConfigBoolean 'TEST_BOOLEAN', false
         buildConfigInt 'TEST_INT', 42
         buildConfigLong 'TEST_LONG', Long.MAX_VALUE
