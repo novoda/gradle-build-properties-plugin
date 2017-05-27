@@ -37,10 +37,10 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName '1.0'
-        buildConfigBoolean 'TEST_BOOLEAN', false
-        buildConfigInt 'TEST_INT', 42
-        buildConfigLong 'TEST_LONG', Long.MAX_VALUE
-        buildConfigDouble 'TEST_DOUBLE', Math.PI
+        buildConfigBoolean 'TEST_BOOLEAN', buildProperties.secrets['notThere'].or(false)
+        buildConfigInt 'TEST_INT', buildProperties.secrets['notThere'].or(42)
+        buildConfigLong 'TEST_LONG', buildProperties.secrets['notThere'].or(Long.MAX_VALUE)
+        buildConfigDouble 'TEST_DOUBLE', buildProperties.secrets['notThere'].or(Math.PI)
         buildConfigString 'TEST_STRING', 'whateva'
         buildConfigString 'OVERRIDABLE', buildProperties.secrets['overridable']
         buildConfigString 'GOOGLE_MAPS_KEY', buildProperties.secrets['googleMapsKey']

@@ -54,42 +54,27 @@ class BuildPropertiesPlugin implements Plugin<Project> {
 
         target.ext.buildConfigBoolean = { String name, def value ->
             buildConfigField('boolean', name, {
-                if (value instanceof Entry) {
-                    return value.boolean
-                }
-                return Boolean.toString(value)
+                return Boolean.toString(value instanceof Entry ? value.boolean : value)
             })
         }
         target.ext.buildConfigInt = { String name, def value ->
             buildConfigField('int', name, {
-                if (value instanceof Entry) {
-                    return value.int
-                }
-                return Integer.toString(value)
+                return Integer.toString(value instanceof Entry ? value.int : value)
             })
         }
         target.ext.buildConfigLong = { String name, def value ->
             buildConfigField('long', name, {
-                if (value instanceof Entry) {
-                    return value.long
-                }
-                return "${Long.toString(value)}L"
+                return "${Long.toString(value instanceof Entry ? value.long : value)}L"
             })
         }
         target.ext.buildConfigDouble = { String name, def value ->
             buildConfigField('double', name, {
-                if (value instanceof Entry) {
-                    return value.double
-                }
-                return Double.toString(value)
+                return Double.toString(value instanceof Entry ? value.double : value)
             })
         }
         target.ext.buildConfigString = { String name, def value ->
             buildConfigField('String', name, {
-                if (value instanceof Entry) {
-                    return "\"$value.string\""
-                }
-                return "\"$value\""
+                return "\"${value instanceof Entry ? value.string : value}\""
             })
         }
     }
