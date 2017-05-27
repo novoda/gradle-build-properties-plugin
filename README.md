@@ -134,9 +134,9 @@ android {
 
     defaultConfig {
         ...
-        buildConfigProperty 'FOO', buildProperties.secrets['foo'] // bar
-        buildConfigProperty 'A_KEY', buildProperties.secrets['aKey'] // overriddenPreviousValue
-        buildConfigProperty 'A_NEW_KEY', buildProperties.secrets['aNewKey'] // aNewValue
+        buildConfigString 'FOO', buildProperties.secrets['foo'] // bar
+        buildConfigString 'A_KEY', buildProperties.secrets['aKey'] // overriddenPreviousValue
+        buildConfigString 'A_NEW_KEY', buildProperties.secrets['aNewKey'] // aNewValue
         ...
     }
 }
@@ -174,11 +174,11 @@ When applying the `gradle-build-properties-plugin` to an Android project you get
 
 #### 1. Store a property value into your `BuildConfig`
 In any product flavor configuration (or `defaultConfig`) you can use
-`buildConfigProperty` as follows:
+`buildConfigString` as follows:
 ```gradle
     defaultConfig {
         ...
-        buildConfigProperty 'API_KEY', buildProperties.secrets['apiKey']
+        buildConfigString 'API_KEY', buildProperties.secrets['apiKey']
         ...
     }
 ```
