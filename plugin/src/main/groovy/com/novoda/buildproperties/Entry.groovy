@@ -22,6 +22,10 @@ class Entry {
         getValue() as Integer
     }
 
+    Long getLong() {
+        getValue() as Long
+    }
+
     Double getDouble() {
         getValue() as Double
     }

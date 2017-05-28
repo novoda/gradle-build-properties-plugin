@@ -18,7 +18,6 @@ public class AndroidProjectIntegrationTest {
 
     public static final ProjectRule PROJECT = new ProjectRule()
     public static final EnvironmentVariables ENV = new EnvironmentVariables()
-    public static final String COMMAND_LINE_PROPERTY = 'modified from command line'
     public static final String ENV_VAR_VALUE = '123456'
 
     @ClassRule
