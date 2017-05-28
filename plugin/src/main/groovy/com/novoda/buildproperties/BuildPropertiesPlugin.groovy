@@ -85,26 +85,17 @@ class BuildPropertiesPlugin implements Plugin<Project> {
         }
         target.ext.resValueBoolean = { String name, def value ->
             resValue('bool', name, {
-                if (value instanceof Entry) {
-                    return value.boolean
-                }
-                return Boolean.toString(value)
+                return Boolean.toString(value instanceof Entry ? value.boolean : value)
             })
         }
         target.ext.resValueInt = { String name, def value ->
             resValue('integer', name, {
-                if (value instanceof Entry) {
-                    return value.int
-                }
-                return Integer.toString(value)
+                return Integer.toString(value instanceof Entry ? value.int : value)
             })
         }
         target.ext.resValueString = { String name, def value ->
             resValue('string', name, {
-                if (value instanceof Entry) {
-                    return "\"$value.string\""
-                }
-                return "\"$value\""
+                return "\"${value instanceof Entry ? value.string : value}\""
             })
         }
     }

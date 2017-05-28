@@ -62,8 +62,8 @@ android {
         debug {
             signingConfig signingConfigs.debug
             buildConfigString 'ONLY_DEBUG', buildProperties.secrets['superSecret']
-            resValueInt 'debug_test_int', 100
-            resValueBoolean 'debug_test_bool', true
+            resValueInt 'debug_test_int', buildProperties.secrets['notThere'].or(100)
+            resValueBoolean 'debug_test_bool', buildProperties.secrets['notThere'].or(true)
             resValueString 'debug_test_string', 'dunno bro...'
             resValueString 'super_secret', buildProperties.secrets['superSecret']
             resValueString 'google_maps_key', buildProperties.resValues['google_maps_key']
