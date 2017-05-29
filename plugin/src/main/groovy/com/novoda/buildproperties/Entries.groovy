@@ -12,8 +12,5 @@ abstract class Entries {
         })
     }
 
-    abstract File getParentFile()
-
     abstract Enumeration<String> getKeys()
-
 }
