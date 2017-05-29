@@ -11,10 +11,9 @@ file that is not checked in as part of your repo for security reasons
 your application `BuildConfig` or in some resource file.
 
 This plugin aims to provide a simple way to:
-- define handles to a properties file in your build script (à la `signingConfig`)
+- define handles to a properties file in your build script
 - generate fields in your `BuildConfig` with values from a properties file
 - generate resources with values from a properties file
-- load signing configurations from a properties file
 
 
 ## Adding to your project
@@ -195,21 +194,7 @@ In any product flavor configuration (or `defaultConfig`) you can use
     }
 ```
 
-#### 3. Load signing configuration from properties
-Instead of inlining your passwords and other details in your build script
-you can fill the signing configuration using a properties file.
-```gradle
-signingConfigs {
-  release {
-    signingConfigProperties buildProperties.releaseSigning
-  }
-}
-```
-The plugin will automatically retrieve all the needed fields from the
-properties file. Note: the path of the keystore file is considered relative
-to the path of the specified properties file.
-
-#### 4. Typed `buildConfigField` / `resValue`
+#### 3. Typed `buildConfigField` / `resValue`
 The plugin enhances the `buildConfigField` and `resValue` facilities to
 enforce types. To generate a string field in your `BuildConfig` you used to write:
 ```gradle
