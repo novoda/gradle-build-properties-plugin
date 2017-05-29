@@ -49,12 +49,21 @@ android {
         buildConfigString 'WAT', buildProperties.env['WAT'].or('?!?')
     }
 
+    signingConfigs.all { signingConfig ->
+        signingConfig.ext.from = { buildProperties ->
+            signingConfig.storeFile rootProject.file("properties/${buildProperties['storeFile'].string}")
+            signingConfig.storePassword buildProperties['storePassword'].string
+            signingConfig.keyAlias buildProperties['keyAlias'].string
+            signingConfig.keyPassword buildProperties['keyPassword'].string
+        }
+    }
+
     signingConfigs {
         debug {
-            signingConfigProperties buildProperties.debugSigning
+            from buildProperties.debugSigning
         }
         release {
-            signingConfigProperties buildProperties.releaseSigning
+            from buildProperties.releaseSigning
         }
     }
 

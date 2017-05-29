@@ -41,10 +41,6 @@ class BuildPropertiesPlugin implements Plugin<Project> {
             addBuildConfigSupportTo(it)
             addResValueSupportTo(it)
         }
-
-        android.signingConfigs.all {
-            addSigningConfigSupportTo(it)
-        }
     }
 
     private static void addBuildConfigSupportTo(target) {
@@ -99,14 +95,4 @@ class BuildPropertiesPlugin implements Plugin<Project> {
             })
         }
     }
-
-    private static void addSigningConfigSupportTo(target) {
-        target.ext.signingConfigProperties = { BuildProperties buildProperties ->
-            target.storeFile new File(buildProperties.parentFile, buildProperties['storeFile'].string)
-            target.storePassword buildProperties['storePassword'].string
-            target.keyAlias buildProperties['keyAlias'].string
-            target.keyPassword buildProperties['keyPassword'].string
-        }
-    }
-
 }
