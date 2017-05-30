@@ -18,6 +18,10 @@ class BuildProperties {
         name
     }
 
+    void from(Map<String, Object> map) {
+        entries(new MapEntries(map))
+    }
+
     void file(File file, String errorMessage = null) {
         entries(LazyEntries.from {
             if (!file.exists()) {
