@@ -61,11 +61,6 @@ class BuildPropertiesTest {
         }
 
         @Override
-        File getParentFile() {
-            throw new UnsupportedOperationException()
-        }
-
-        @Override
         Enumeration<String> getKeys() {
             Collections.enumeration(entries.keySet())
         }

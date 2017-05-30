@@ -14,7 +14,7 @@ class BuildPropertiesPlugin implements Plugin<Project> {
                 return new BuildProperties(name, project)
             }
         })
-        container.create('env').entries(new EnvironmentPropertiesEntries(project))
+        container.create('env').entries(new EnvironmentPropertiesEntries())
         project.extensions.add('buildProperties', container)
 
         project.plugins.withId('com.android.application') {
@@ -40,10 +40,6 @@ class BuildPropertiesPlugin implements Plugin<Project> {
         android.buildTypes.all {
             addBuildConfigSupportTo(it)
             addResValueSupportTo(it)
-        }
-
-        android.signingConfigs.all {
-            addSigningConfigSupportTo(it)
         }
     }
 
@@ -99,14 +95,4 @@ class BuildPropertiesPlugin implements Plugin<Project> {
             })
         }
     }
-
-    private static void addSigningConfigSupportTo(target) {
-        target.ext.signingConfigProperties = { BuildProperties buildProperties ->
-            target.storeFile new File(buildProperties.parentFile, buildProperties['storeFile'].string)
-            target.storePassword buildProperties['storePassword'].string
-            target.keyAlias buildProperties['keyAlias'].string
-            target.keyPassword buildProperties['keyPassword'].string
-        }
-    }
-
 }

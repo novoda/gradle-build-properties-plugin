@@ -27,7 +27,7 @@ class EnvironmentPropertiesEntriesTest {
         project = ProjectBuilder.builder()
                 .withProjectDir(temp.newFolder())
                 .build()
-        entries = new EnvironmentPropertiesEntries(project)
+        entries = new EnvironmentPropertiesEntries()
     }
 
     @Test
@@ -67,12 +67,4 @@ class EnvironmentPropertiesEntriesTest {
 
         assertThat(Collections.list(keys)).containsAllOf('FOO', 'BAR')
     }
-
-    @Test
-    public void shouldProvideProjectRootDirAsParentFile() {
-        File parentFile = entries.parentFile
-
-        assertThat(parentFile).isEqualTo(project.rootDir)
-    }
-
 }

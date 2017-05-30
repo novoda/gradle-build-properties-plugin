@@ -31,10 +31,6 @@ class BuildProperties {
         this.entries = entries
     }
 
-    File getParentFile() {
-        entries.parentFile
-    }
-
     Enumeration<String> getKeys() {
         entries.keys
     }
@@ -70,15 +66,8 @@ class BuildProperties {
         }
 
         @Override
-        File getParentFile() {
-            entries.getParentFile()
-        }
-
-        @Override
         Enumeration<String> getKeys() {
             entries.getKeys()
         }
-
     }
-
 }

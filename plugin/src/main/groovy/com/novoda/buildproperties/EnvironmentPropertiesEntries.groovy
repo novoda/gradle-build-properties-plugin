@@ -1,14 +1,6 @@
 package com.novoda.buildproperties
 
-import org.gradle.api.Project
-
 class EnvironmentPropertiesEntries extends Entries {
-
-    private final Project project
-
-    EnvironmentPropertiesEntries(Project project) {
-        this.project = project
-    }
 
     @Override
     boolean contains(String key) {
@@ -22,11 +14,6 @@ class EnvironmentPropertiesEntries extends Entries {
             return envValue
         }
         throw new IllegalArgumentException("No environment variable defined for key '$key'")
-    }
-
-    @Override
-    File getParentFile() {
-        project.rootDir
     }
 
     @Override

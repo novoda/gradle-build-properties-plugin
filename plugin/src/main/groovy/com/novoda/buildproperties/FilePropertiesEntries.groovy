@@ -49,11 +49,6 @@ class FilePropertiesEntries extends Entries {
     }
 
     @Override
-    File getParentFile() {
-        file.parentFile
-    }
-
-    @Override
     Enumeration<String> getKeys() {
         Collections.enumeration(keys)
     }
