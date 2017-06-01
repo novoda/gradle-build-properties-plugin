@@ -30,7 +30,7 @@ class MapEntriesTest {
     }
 
     @Test
-    public void shouldProvidValueForDefinedKey() {
+    public void shouldProvideValueForDefinedKey() {
         def entries = new MapEntries([foo: 'bar'])
 
         Entry entry = entries['foo']
