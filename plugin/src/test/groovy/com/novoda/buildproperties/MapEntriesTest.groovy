@@ -44,6 +44,6 @@ class MapEntriesTest {
 
         Enumeration<String> keys = entries.keys
 
-        assertThat(Collections.list(keys)).containsAllIn('foo', 'x')
+        assertThat(Collections.list(keys)).containsAllOf('foo', 'x')
     }
 }
