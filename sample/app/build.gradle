@@ -25,6 +25,9 @@ buildProperties {
     releaseSigning {
         file rootProject.file('properties/releaseSigning.properties')
     }
+    env {
+        from System.getenv()
+    }
 }
 
 android {

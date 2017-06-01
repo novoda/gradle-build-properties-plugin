@@ -141,15 +141,6 @@ android {
 }
 ```
 
-#### Other built-in `Entry` sets
-It's possible to access a system enviroment variable as `Entry` via a predefined set of entries, ie:
-
-```groovy
-buildProperties.env['FOO']
-```
-Such entries are particularly handy when used alongside the `Entry.or()` operator in order to provide
-fallback values.
-
 #### More on loading properties
 If the specified file is not found an exception is thrown at build time as soon as one of its properties is evaluated.
 You can specify a custom error message to provide the user with more information, eg:

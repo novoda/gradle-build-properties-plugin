@@ -14,7 +14,6 @@ class BuildPropertiesPlugin implements Plugin<Project> {
                 return new BuildProperties(name, project)
             }
         })
-        container.create('env').entries(new EnvironmentPropertiesEntries())
         project.extensions.add('buildProperties', container)
 
         project.plugins.withId('com.android.application') {
