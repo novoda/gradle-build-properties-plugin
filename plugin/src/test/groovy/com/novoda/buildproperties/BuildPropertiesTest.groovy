@@ -1,5 +1,6 @@
 package com.novoda.buildproperties
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
@@ -9,6 +10,7 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables
 import org.junit.rules.TemporaryFolder
 
 import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
+import static org.junit.Assert.fail
 
 class BuildPropertiesTest {
 
@@ -30,11 +32,9 @@ class BuildPropertiesTest {
 
     @Test
     public void shouldReturnMapValuesWhenEntriesFromMap() {
-        project.with {
-            buildProperties {
-                map {
-                    from([a: 'value_a', b: 'value_b', c: 'value_c'])
-                }
+        project.buildProperties {
+            map {
+                from([a: 'value_a', b: 'value_b', c: 'value_c'])
             }
         }
 
@@ -45,11 +45,9 @@ class BuildPropertiesTest {
 
     @Test
     public void shouldReturnMapKeysWhenEntriesFromMap() {
-        project.with {
-            buildProperties {
-                map {
-                    from([a: 'value_a', b: 'value_b', c: 'value_c'])
-                }
+        project.buildProperties {
+            map {
+                from([a: 'value_a', b: 'value_b', c: 'value_c'])
             }
         }
 
@@ -64,11 +62,9 @@ class BuildPropertiesTest {
         environment.set('Y', 'value_y')
         environment.set('Z', 'value_z')
 
-        project.with {
-            buildProperties {
-                env {
-                    from System.getenv()
-                }
+        project.buildProperties {
+            env {
+                from System.getenv()
             }
         }
 
@@ -83,11 +79,9 @@ class BuildPropertiesTest {
         environment.set('Y', 'value_y')
         environment.set('Z', 'value_z')
 
-        project.with {
-            buildProperties {
-                env {
-                    from System.getenv()
-                }
+        project.buildProperties {
+            env {
+                from System.getenv()
             }
         }
 
@@ -102,11 +96,9 @@ class BuildPropertiesTest {
         project.ext.y = 'value_y'
         project.ext.z = 'value_z'
 
-        project.with {
-            buildProperties {
-                prj {
-                    from project.properties
-                }
+        project.buildProperties {
+            prj {
+                from project.properties
             }
         }
 
@@ -121,11 +113,9 @@ class BuildPropertiesTest {
         project.ext.y = 'value_y'
         project.ext.z = 'value_z'
 
-        project.with {
-            buildProperties {
-                prj {
-                    from project.properties
-                }
+        project.buildProperties {
+            prj {
+                from project.properties
             }
         }
 
@@ -135,14 +125,57 @@ class BuildPropertiesTest {
     }
 
     @Test
+    public void shouldNotThrowExceptionWhenEntriesFromNonExistentPropertiesFile() {
+        project.buildProperties {
+            foo {
+                file project.file('foo.properties')
+            }
+        }
+    }
+
+    @Test
+    public void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
+        project.buildProperties {
+            foo {
+                file project.file('foo.properties')
+            }
+        }
+
+        try {
+            project.buildProperties.foo['any'].string
+            fail('Gradle exception not thrown')
+        } catch (GradleException e) {
+            assertThat(e.getMessage()).endsWith('foo.properties does not exist.')
+        }
+    }
+
+    @Test
+    public void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
+        project.apply plugin: BuildPropertiesPlugin
+
+        def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
+        try {
+            project.buildProperties {
+                foo {
+                    file project.file('foo.properties'), errorMessage
+                }
+            }
+            project.buildProperties.foo['any'].string
+            fail('Gradle exception not thrown')
+        } catch (GradleException e) {
+            String message = e.getMessage()
+            assertThat(message).contains('foo.properties does not exist.')
+            assertThat(message).endsWith(errorMessage)
+        }
+    }
+
+    @Test
     public void shouldReturnPropertiesFileValuesWhenEntriesFromPropertiesFile() {
         File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
 
-        project.with {
-            buildProperties {
-                test {
-                    file propertiesFile
-                }
+        project.buildProperties {
+            test {
+                file propertiesFile
             }
         }
 
@@ -155,11 +188,9 @@ class BuildPropertiesTest {
     public void shouldReturnPropertiesFileKeysWhenEntriesFromPropertiesFile() {
         File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
 
-        project.with {
-            buildProperties {
-                test {
-                    file propertiesFile
-                }
+        project.buildProperties {
+            test {
+                file propertiesFile
             }
         }
 
