@@ -1,17 +1,14 @@
 package com.novoda.buildproperties
 
 import org.gradle.api.GradleException
-import org.gradle.api.Project
 
 class BuildProperties {
 
     private final String name
-    private final Project project
     private Entries entries
 
-    BuildProperties(String name, Project project) {
+    BuildProperties(String name) {
         this.name = name
-        this.project = project
     }
 
     String getName() {

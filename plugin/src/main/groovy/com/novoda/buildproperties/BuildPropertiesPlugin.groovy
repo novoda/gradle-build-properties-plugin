@@ -11,7 +11,7 @@ class BuildPropertiesPlugin implements Plugin<Project> {
         def container = project.container(BuildProperties, new NamedDomainObjectFactory<BuildProperties>() {
             @Override
             BuildProperties create(String name) {
-                return new BuildProperties(name, project)
+                return new BuildProperties(name)
             }
         })
         project.extensions.add('buildProperties', container)
