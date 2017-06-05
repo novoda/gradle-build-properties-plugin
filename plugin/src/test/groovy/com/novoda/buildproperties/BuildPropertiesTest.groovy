@@ -44,19 +44,6 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldReturnMapKeysWhenEntriesFromMap() {
-        project.buildProperties {
-            map {
-                from([a: 'value_a', b: 'value_b', c: 'value_c'])
-            }
-        }
-
-        def keys = project.buildProperties.map.keys
-
-        assertThat(Collections.list(keys)).containsExactly('b', 'a', 'c')
-    }
-
-    @Test
     public void shouldReturnEnvironmentVariablesValuesWhenEntriesFromEnvironmentVariables() {
         environment.set('X', 'value_x')
         environment.set('Y', 'value_y')
@@ -74,23 +61,6 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldReturnEnvironmentVariablesKeysWhenEntriesFromEnvironmentVariables() {
-        environment.set('X', 'value_x')
-        environment.set('Y', 'value_y')
-        environment.set('Z', 'value_z')
-
-        project.buildProperties {
-            env {
-                from System.getenv()
-            }
-        }
-
-        def keys = project.buildProperties.env.keys
-
-        assertThat(Collections.list(keys)).containsAllOf('X', 'Y', 'Z')
-    }
-
-    @Test
     public void shouldReturnProjectPropertiesValuesWhenEntriesFromProjectProperties() {
         project.ext.x = 'value_x'
         project.ext.y = 'value_y'
@@ -105,23 +75,6 @@ class BuildPropertiesTest {
         assertThat(project.buildProperties.prj['x']).hasValue('value_x')
         assertThat(project.buildProperties.prj['y']).hasValue('value_y')
         assertThat(project.buildProperties.prj['z']).hasValue('value_z')
-    }
-
-    @Test
-    public void shouldReturnProjectPropertiesKeysWhenEntriesFromProjectProperties() {
-        project.ext.x = 'value_x'
-        project.ext.y = 'value_y'
-        project.ext.z = 'value_z'
-
-        project.buildProperties {
-            prj {
-                from project.properties
-            }
-        }
-
-        def keys = project.buildProperties.prj.keys
-
-        assertThat(Collections.list(keys)).containsAllOf('x', 'y', 'z')
     }
 
     @Test
@@ -182,21 +135,6 @@ class BuildPropertiesTest {
         assertThat(project.buildProperties.test['d']).hasValue('value_d')
         assertThat(project.buildProperties.test['e']).hasValue('value_e')
         assertThat(project.buildProperties.test['f']).hasValue('value_f')
-    }
-
-    @Test
-    public void shouldReturnPropertiesFileKeysWhenEntriesFromPropertiesFile() {
-        File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
-
-        project.buildProperties {
-            test {
-                file propertiesFile
-            }
-        }
-
-        def keys = project.buildProperties.test.keys
-
-        assertThat(Collections.list(keys)).containsExactly('d', 'e', 'f')
     }
 
     private File newPropertiesFile(String fileName, String fileContent) {
