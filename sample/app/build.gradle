@@ -28,6 +28,9 @@ buildProperties {
     env {
         from System.getenv()
     }
+    cli {
+        from project.properties
+    }
 }
 
 android {
@@ -45,7 +48,7 @@ android {
         buildConfigLong 'TEST_LONG', buildProperties.secrets['notThere'].or(Long.MAX_VALUE)
         buildConfigDouble 'TEST_DOUBLE', buildProperties.secrets['notThere'].or(Math.PI)
         buildConfigString 'TEST_STRING', 'whateva'
-        buildConfigString 'OVERRIDABLE', buildProperties.secrets['overridable']
+        buildConfigString 'OVERRIDABLE', buildProperties.cli['overridable'].or(buildProperties.secrets['overridable'])
         buildConfigString 'GOOGLE_MAPS_KEY', buildProperties.secrets['googleMapsKey']
         buildConfigString 'SUPER_SECRET', buildProperties.secrets['superSecret']
         buildConfigString 'FOO', buildProperties.secrets['notThere'].or(buildProperties.notThere['foo']).or('bar')
