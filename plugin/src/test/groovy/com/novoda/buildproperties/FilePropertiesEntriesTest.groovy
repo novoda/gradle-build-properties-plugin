@@ -7,19 +7,19 @@ import org.junit.Test
 import static com.google.common.truth.Truth.assertThat
 import static org.junit.Assert.fail
 
-public class FilePropertiesEntriesTest {
+class FilePropertiesEntriesTest {
 
     private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
 
     private FilePropertiesEntries entries
 
     @Before
-    public void setUp() {
+    void setUp() {
         entries = FilePropertiesEntries.create(PROPERTIES_FILE)
     }
 
     @Test
-    public void shouldNotAccessPropertyValueWhenGettingEntry() {
+    void shouldNotAccessPropertyValueWhenGettingEntry() {
         try {
             Entry entry = entries['notThere']
         } catch (IllegalArgumentException ignored) {
@@ -28,20 +28,20 @@ public class FilePropertiesEntriesTest {
     }
 
     @Test
-    public void shouldCheckPropertyExistenceInstantly() {
+    void shouldCheckPropertyExistenceInstantly() {
         assertThat(entries.contains('notThere')).isFalse()
         assertThat(entries.contains('aProperty')).isTrue()
     }
 
     @Test
-    public void shouldRetrieveValueWhenPropertyDefined() {
+    void shouldRetrieveValueWhenPropertyDefined() {
         def value = entries['aProperty'].string
 
         assertThat(value).isEqualTo('qwerty')
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionWhenTryingToAccessValueOfUndefinedProperty() {
+    void shouldThrowIllegalArgumentExceptionWhenTryingToAccessValueOfUndefinedProperty() {
         try {
             entries['notThere'].string
             fail('IllegalArgumentException expected')
@@ -51,19 +51,19 @@ public class FilePropertiesEntriesTest {
     }
 
     @Test
-    public void shouldConvertToTrueBooleanWhenPropertyDefinedAsTrue() {
+    void shouldConvertToTrueBooleanWhenPropertyDefinedAsTrue() {
         Boolean value = entries['positive'].boolean
         assertThat(value).isTrue()
     }
 
     @Test
-    public void shouldConvertToFalseWhenPropertyNotDefinedAsBoolean() {
+    void shouldConvertToFalseWhenPropertyNotDefinedAsBoolean() {
         Boolean value = entries['string'].boolean
         assertThat(value).isFalse()
     }
 
     @Test
-    public void shouldThrowNumberFormatExceptionWhenPropertyNotDefinedAsInteger() {
+    void shouldThrowNumberFormatExceptionWhenPropertyNotDefinedAsInteger() {
         try {
             entries['string'].int
         } catch (NumberFormatException e) {
@@ -72,13 +72,13 @@ public class FilePropertiesEntriesTest {
     }
 
     @Test
-    public void shouldConvertToIntegerWhenPropertyDefinedAsInteger() {
+    void shouldConvertToIntegerWhenPropertyDefinedAsInteger() {
         Integer value = entries['int'].int
         assertThat(value).isEqualTo(123456)
     }
 
     @Test
-    public void shouldThrowNumberFormatExceptionWhenPropertyNotDefinedAsDouble() {
+    void shouldThrowNumberFormatExceptionWhenPropertyNotDefinedAsDouble() {
         try {
             entries['string'].double
         } catch (NumberFormatException e) {
@@ -87,18 +87,18 @@ public class FilePropertiesEntriesTest {
     }
 
     @Test
-    public void shouldConvertToDoubleWhenPropertyDefinedAsDouble() {
+    void shouldConvertToDoubleWhenPropertyDefinedAsDouble() {
         Double value = entries['double'].double
         assertThat(value).isEqualTo(0.001 as Double)
     }
 
     @Test
-    public void shouldEnumerateAllKeysInPropertiesFile() {
+    void shouldEnumerateAllKeysInPropertiesFile() {
         assertThat(Collections.list(entries.keys)).containsExactly('aProperty', 'another_PROPERTY', 'api.key', 'negative', 'positive', 'int', 'double', 'string')
     }
 
     @Test
-    public void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
+    void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
         def moreEntries = FilePropertiesEntries.create(new File(Resources.getResource('more.properties').toURI()))
         def includingEntries = FilePropertiesEntries.create(new File(Resources.getResource('including.properties').toURI()))
 
