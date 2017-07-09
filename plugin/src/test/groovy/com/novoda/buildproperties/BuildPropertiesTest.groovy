@@ -23,7 +23,7 @@ class BuildPropertiesTest {
     private Project project
 
     @Before
-    public void setUp() {
+    void setUp() {
         project = ProjectBuilder.builder()
                 .withProjectDir(temp.newFolder())
                 .build()
@@ -31,7 +31,7 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldReturnMapValuesWhenEntriesFromMap() {
+    void shouldReturnMapValuesWhenEntriesFromMap() {
         project.buildProperties {
             map {
                 from([a: 'value_a', b: 'value_b', c: 'value_c'])
@@ -44,7 +44,7 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldReturnEnvironmentVariablesValuesWhenEntriesFromEnvironmentVariables() {
+    void shouldReturnEnvironmentVariablesValuesWhenEntriesFromEnvironmentVariables() {
         environment.set('X', 'value_x')
         environment.set('Y', 'value_y')
         environment.set('Z', 'value_z')
@@ -61,7 +61,7 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldReturnProjectPropertiesValuesWhenEntriesFromProjectProperties() {
+    void shouldReturnProjectPropertiesValuesWhenEntriesFromProjectProperties() {
         project.ext.x = 'value_x'
         project.ext.y = 'value_y'
         project.ext.z = 'value_z'
@@ -78,7 +78,7 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenEntriesFromNonExistentPropertiesFile() {
+    void shouldNotThrowExceptionWhenEntriesFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
                 file project.file('foo.properties')
@@ -87,7 +87,7 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
+    void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
                 file project.file('foo.properties')
@@ -103,7 +103,7 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
+    void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
         project.apply plugin: BuildPropertiesPlugin
 
         def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
@@ -123,7 +123,7 @@ class BuildPropertiesTest {
     }
 
     @Test
-    public void shouldReturnPropertiesFileValuesWhenEntriesFromPropertiesFile() {
+    void shouldReturnPropertiesFileValuesWhenEntriesFromPropertiesFile() {
         File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
 
         project.buildProperties {

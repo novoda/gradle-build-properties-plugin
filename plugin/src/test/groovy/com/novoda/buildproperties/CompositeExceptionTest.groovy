@@ -12,7 +12,7 @@ class CompositeExceptionTest {
     private static final Exception EXCEPTION_3 = new RuntimeException("exception 3")
 
     @Test
-    public void shouldHaveNoCause() {
+    void shouldHaveNoCause() {
         CompositeException compositeException = CompositeException.from(EXCEPTION_1)
 
         Throwable cause = compositeException.cause
@@ -21,21 +21,21 @@ class CompositeExceptionTest {
     }
 
     @Test
-    public void shouldContainWrappedException() {
+    void shouldContainWrappedException() {
         CompositeException compositeException = CompositeException.from(EXCEPTION_1)
 
         assertThat(compositeException).hasMessage(EXCEPTION_1.message)
     }
 
     @Test
-    public void shouldContainAddedException() {
+    void shouldContainAddedException() {
         CompositeException compositeException = CompositeException.from(EXCEPTION_1).add(EXCEPTION_2)
 
         assertThat(compositeException).hasMessage(EXCEPTION_1.message, EXCEPTION_2.message)
     }
 
     @Test
-    public void shouldContainAddedCompositeExceptionMessage() {
+    void shouldContainAddedCompositeExceptionMessage() {
         CompositeException innerException = CompositeException.from(EXCEPTION_1).add(EXCEPTION_2)
         CompositeException compositeException = innerException.add(EXCEPTION_3)
 

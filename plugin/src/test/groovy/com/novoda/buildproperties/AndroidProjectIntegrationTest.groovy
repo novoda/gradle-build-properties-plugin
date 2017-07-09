@@ -14,7 +14,7 @@ import org.junit.runners.model.Statement
 
 import static com.google.common.truth.Truth.assertThat
 
-public class AndroidProjectIntegrationTest {
+class AndroidProjectIntegrationTest {
 
     public static final ProjectRule PROJECT = new ProjectRule()
     public static final EnvironmentVariables ENV = new EnvironmentVariables()
@@ -22,12 +22,12 @@ public class AndroidProjectIntegrationTest {
     public static final String ENV_VAR_VALUE = '123456'
 
     @ClassRule
-    public static TestRule classRule() {
+    static TestRule classRule() {
         RuleChain.outerRule(PROJECT).around(ENV)
     }
 
     @Test
-    public void shouldGenerateTypedFieldsFromTypedValuesProvidedInDefaultBuildConfig() {
+    void shouldGenerateTypedFieldsFromTypedValuesProvidedInDefaultBuildConfig() {
         [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
             assertThat(generatedBuildConfig).contains('public static final boolean TEST_BOOLEAN = false;')
             assertThat(generatedBuildConfig).contains('public static final double TEST_DOUBLE = 3.141592653589793;')
@@ -38,7 +38,7 @@ public class AndroidProjectIntegrationTest {
     }
 
     @Test
-    public void shouldGenerateStringFieldsFromPropertiesFileProvidedInDefaultBuildConfig() {
+    void shouldGenerateStringFieldsFromPropertiesFileProvidedInDefaultBuildConfig() {
         [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
             assertThat(generatedBuildConfig).contains("public static final String GOOGLE_MAPS_KEY = \"${PROJECT.secrets['googleMapsKey'].string}\";")
             assertThat(generatedBuildConfig).contains("public static final String SUPER_SECRET = \"${PROJECT.secrets['superSecret'].string}\";")
@@ -46,13 +46,13 @@ public class AndroidProjectIntegrationTest {
     }
 
     @Test
-    public void shouldGenerateStringFieldForSinglePropertyProvidedInBuildTypeBuildConfig() {
+    void shouldGenerateStringFieldForSinglePropertyProvidedInBuildTypeBuildConfig() {
         assertThat(PROJECT.debugBuildConfig.text).contains("public static final String ONLY_DEBUG")
         assertThat(PROJECT.releaseBuildConfig.text).doesNotContain("public static final String ONLY_DEBUG")
     }
 
     @Test
-    public void shouldGenerateXmlResourcesProvidedInBuildTypeResValues() {
+    void shouldGenerateXmlResourcesProvidedInBuildTypeResValues() {
         String debugGeneratedResources = PROJECT.debugResValues.text
         assertThat(debugGeneratedResources).contains('<bool name="debug_test_bool">true</bool>')
         assertThat(debugGeneratedResources).contains('<integer name="debug_test_int">100</integer>')
@@ -63,12 +63,12 @@ public class AndroidProjectIntegrationTest {
     }
 
     @Test
-    public void shouldNotGenerateXmlResourcesWhenNotProvidedInBuildTypeResValues() {
+    void shouldNotGenerateXmlResourcesWhenNotProvidedInBuildTypeResValues() {
         assertThat(PROJECT.releaseResValues.exists()).isFalse()
     }
 
     @Test
-    public void shouldOverridePropertyValueInFileWithValueProvidedViaCommandLine() {
+    void shouldOverridePropertyValueInFileWithValueProvidedViaCommandLine() {
         assertThat(PROJECT.secrets['overridable']).isNotEqualTo(COMMAND_LINE_PROPERTY)
         [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
             assertThat(generatedBuildConfig).contains("public static final String OVERRIDABLE = \"$COMMAND_LINE_PROPERTY\";")
@@ -76,7 +76,7 @@ public class AndroidProjectIntegrationTest {
     }
 
     @Test
-    public void shouldEvaluateFallbackWhenNeeded() {
+    void shouldEvaluateFallbackWhenNeeded() {
         EntrySubject.assertThat(PROJECT.secrets['FOO']).willThrow(IllegalArgumentException)
         [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
             assertThat(generatedBuildConfig).contains('public static final String FOO = "bar";')
@@ -84,7 +84,7 @@ public class AndroidProjectIntegrationTest {
     }
 
     @Test
-    public void shouldEvaluateEnvironmentVariable() {
+    void shouldEvaluateEnvironmentVariable() {
         assertThat(System.getenv('WAT')).isEqualTo(ENV_VAR_VALUE)
         [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
             assertThat(generatedBuildConfig).contains("public static final String WAT = \"$ENV_VAR_VALUE\";")
@@ -92,7 +92,7 @@ public class AndroidProjectIntegrationTest {
     }
 
     @Test
-    public void shouldSignReleaseBuildUsingProperties() throws Exception {
+    void shouldSignReleaseBuildUsingProperties() throws Exception {
         assertThat(new File(PROJECT.apkDir, 'app-release.apk').exists()).isTrue()
     }
 

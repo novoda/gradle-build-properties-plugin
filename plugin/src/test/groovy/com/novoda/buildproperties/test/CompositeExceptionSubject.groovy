@@ -8,7 +8,7 @@ import com.novoda.buildproperties.CompositeException
 
 import javax.annotation.Nullable
 
-public final class CompositeExceptionSubject extends Subject<CompositeExceptionSubject, CompositeException> {
+final class CompositeExceptionSubject extends Subject<CompositeExceptionSubject, CompositeException> {
 
     private static final SubjectFactory<CompositeExceptionSubject, CompositeException> FACTORY =
             new SubjectFactory<CompositeExceptionSubject, CompositeException>() {
@@ -18,7 +18,7 @@ public final class CompositeExceptionSubject extends Subject<CompositeExceptionS
                 }
             }
 
-    public static CompositeExceptionSubject assertThat(CompositeException compositeException) {
+    static CompositeExceptionSubject assertThat(CompositeException compositeException) {
         Truth.assertAbout(FACTORY).that(compositeException)
     }
 
@@ -27,7 +27,7 @@ public final class CompositeExceptionSubject extends Subject<CompositeExceptionS
         super(failureStrategy, subject)
     }
 
-    public void hasMessage(String... messages) {
+    void hasMessage(String... messages) {
         Truth.assertThat(subject.exceptions.collect { it.message }).containsExactly(messages)
     }
 
