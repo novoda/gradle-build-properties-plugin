@@ -15,10 +15,10 @@ import static org.junit.Assert.fail
 class BuildPropertiesTest {
 
     @Rule
-    final TemporaryFolder temp = new TemporaryFolder()
+    public final TemporaryFolder temp = new TemporaryFolder()
 
     @Rule
-    final EnvironmentVariables environment = new EnvironmentVariables()
+    public final EnvironmentVariables environment = new EnvironmentVariables()
 
     private Project project
 
