@@ -1,10 +1,14 @@
 package com.novoda.buildproperties
 
 import com.google.common.io.Resources
+import org.gradle.api.GradleException
 import org.junit.Before
 import org.junit.Test
 
 import static com.google.common.truth.Truth.assertThat
+import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
+import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
+import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
 import static org.junit.Assert.fail
 
 class FilePropertiesEntriesTest {
@@ -15,7 +19,7 @@ class FilePropertiesEntriesTest {
 
     @Before
     void setUp() {
-        entries = FilePropertiesEntries.create(PROPERTIES_FILE)
+        entries = FilePropertiesEntries.create('any', PROPERTIES_FILE)
     }
 
     @Test
@@ -99,8 +103,8 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create(new File(Resources.getResource('more.properties').toURI()))
-        def includingEntries = FilePropertiesEntries.create(new File(Resources.getResource('including.properties').toURI()))
+        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()))
+        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()))
 
         entries.keys.each { String key ->
             assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
@@ -110,4 +114,30 @@ class FilePropertiesEntriesTest {
         assertThat(includingEntries['a'].string).isEqualTo('apple')
     }
 
+    @Test
+    void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'))
+
+        try {
+            entries['any'].string
+            fail('Gradle exception not thrown')
+        } catch (GradleException e) {
+            assertThat(e.getMessage()).endsWith('notThere.properties does not exist.')
+        }
+    }
+
+    @Test
+    void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
+        def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), errorMessage)
+
+        try {
+            entries['any'].string
+            fail('Gradle exception not thrown')
+        } catch (GradleException e) {
+            String message = e.getMessage()
+            assertThat(message).contains('notThere.properties does not exist.')
+            assertThat(message).endsWith(errorMessage)
+        }
+    }
 }
