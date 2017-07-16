@@ -1,23 +1,8 @@
 package com.novoda.buildproperties.internal
 
-class ExceptionFactory {
+interface ExceptionFactory {
 
-    final String additionalMessage
-    final ConsoleRenderer consoleRenderer = new ConsoleRenderer()
+    Exception fileNotFound(File file)
 
-    ExceptionFactory(String additionalMessage) {
-        this.additionalMessage = additionalMessage
-    }
-
-    FileNotFoundException fileNotFound(File file) {
-        new FileNotFoundException("File ${consoleRenderer.asClickableFileUrl(file)} does not exist.${formattedAdditionalMessage()}")
-    }
-
-    PropertyNotFoundException propertyNotFound(String key) {
-        new PropertyNotFoundException(key)
-    }
-
-    private String formattedAdditionalMessage() {
-        additionalMessage ? "\n$additionalMessage" : ''
-    }
+    Exception propertyNotFound(String key)
 }

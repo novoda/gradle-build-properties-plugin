@@ -1,7 +1,6 @@
 package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entries
-import org.gradle.api.GradleException
 
 class FilePropertiesEntries extends Entries {
 
@@ -9,8 +8,11 @@ class FilePropertiesEntries extends Entries {
     private final Closure<PropertiesProvider> providerClosure
 
     static FilePropertiesEntries create(String name, File file, String errorMessage = null) {
+        create(name, file, new DefaultExceptionFactory(errorMessage))
+    }
+
+    static FilePropertiesEntries create(String name, File file, ExceptionFactory exceptionFactory) {
         new FilePropertiesEntries(name, {
-            def exceptionFactory = new ExceptionFactory(errorMessage)
             if (!file.exists()) {
                 throw exceptionFactory.fileNotFound(file)
             }
