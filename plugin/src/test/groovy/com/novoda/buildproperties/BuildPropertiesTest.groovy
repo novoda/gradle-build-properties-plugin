@@ -1,6 +1,5 @@
 package com.novoda.buildproperties
 
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
@@ -97,7 +96,7 @@ class BuildPropertiesTest {
         try {
             project.buildProperties.foo['any'].string
             fail('Gradle exception not thrown')
-        } catch (GradleException e) {
+        } catch (Exception e) {
             assertThat(e.getMessage()).endsWith('foo.properties does not exist.')
         }
     }
@@ -115,7 +114,7 @@ class BuildPropertiesTest {
             }
             project.buildProperties.foo['any'].string
             fail('Gradle exception not thrown')
-        } catch (GradleException e) {
+        } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('foo.properties does not exist.')
             assertThat(message).endsWith(errorMessage)

@@ -44,12 +44,12 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldThrowIllegalArgumentExceptionWhenTryingToAccessValueOfUndefinedProperty() {
+    void shouldThrowExceptionWhenTryingToAccessValueOfUndefinedProperty() {
         try {
             entries['notThere'].string
-            fail('IllegalArgumentException expected')
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage()).startsWith("No value defined for property 'notThere'")
+            fail('Exception expected')
+        } catch (Exception e) {
+            assertThat(e.getMessage()).startsWith("No property defined with key 'notThere'")
         }
     }
 
@@ -119,8 +119,8 @@ class FilePropertiesEntriesTest {
 
         try {
             entries['any'].string
-            fail('Gradle exception not thrown')
-        } catch (GradleException e) {
+            fail('Exception not thrown')
+        } catch (Exception e) {
             assertThat(e.getMessage()).endsWith('notThere.properties does not exist.')
         }
     }
@@ -132,8 +132,8 @@ class FilePropertiesEntriesTest {
 
         try {
             entries['any'].string
-            fail('Gradle exception not thrown')
-        } catch (GradleException e) {
+            fail('Exception not thrown')
+        } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('notThere.properties does not exist.')
             assertThat(message).endsWith(errorMessage)

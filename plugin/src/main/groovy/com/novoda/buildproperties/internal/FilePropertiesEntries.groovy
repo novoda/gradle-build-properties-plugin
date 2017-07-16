@@ -10,10 +10,11 @@ class FilePropertiesEntries extends Entries {
 
     static FilePropertiesEntries create(String name, File file, String errorMessage = null) {
         new FilePropertiesEntries(name, {
+            def exceptionFactory = new ExceptionFactory(errorMessage)
             if (!file.exists()) {
-                throw new GradleException("File $file.name does not exist.${errorMessage ? "\n$errorMessage" : ''}")
+                throw exceptionFactory.fileNotFound(file)
             }
-            PropertiesProvider.create(file)
+            PropertiesProvider.create(file, exceptionFactory)
         })
     }
 
@@ -45,24 +46,29 @@ class FilePropertiesEntries extends Entries {
         final File file
         final Properties properties
         final PropertiesProvider defaults
+        final ExceptionFactory exceptionFactory
         final Set<String> keys
 
-        static PropertiesProvider create(File file) {
+        static PropertiesProvider create(File file, ExceptionFactory exceptionFactory) {
             Properties properties = new Properties()
             properties.load(new FileInputStream(file))
 
             PropertiesProvider defaults = null
             String include = properties['include']
             if (include != null) {
-                defaults = create(new File(file.parentFile, include))
+                defaults = create(new File(file.parentFile, include), exceptionFactory)
             }
-            new PropertiesProvider(file, properties, defaults)
+            new PropertiesProvider(file, properties, defaults, exceptionFactory)
         }
 
-        private PropertiesProvider(File file, Properties properties, PropertiesProvider defaults) {
+        private PropertiesProvider(File file,
+                                   Properties properties,
+                                   PropertiesProvider defaults,
+                                   ExceptionFactory exceptionFactory) {
             this.file = file
             this.properties = properties
             this.defaults = defaults
+            this.exceptionFactory = exceptionFactory
             this.keys = new HashSet<>(properties.stringPropertyNames())
             if (defaults != null) {
                 this.keys.addAll(defaults.keys)
@@ -81,7 +87,7 @@ class FilePropertiesEntries extends Entries {
             if (defaults?.contains(key)) {
                 return defaults.getValueAt(key)
             }
-            throw new IllegalArgumentException("No value defined for property '$key' in properties file $file.absolutePath")
+            throw exceptionFactory.propertyNotFound(key)
         }
 
         Enumeration<String> getKeys() {
