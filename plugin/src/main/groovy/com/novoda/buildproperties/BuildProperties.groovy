@@ -1,5 +1,8 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.FilePropertiesEntries
+import com.novoda.buildproperties.internal.MapEntries
+
 class BuildProperties {
 
     private final String name

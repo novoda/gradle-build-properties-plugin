@@ -1,13 +1,12 @@
-package com.novoda.buildproperties
+package com.novoda.buildproperties.internal
 
 import com.google.common.io.Resources
+import com.novoda.buildproperties.Entry
+import com.novoda.buildproperties.internal.FilePropertiesEntries
 import org.gradle.api.GradleException
 import org.junit.Before
 import org.junit.Test
 
-import static com.google.common.truth.Truth.assertThat
-import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
-import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
 import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
 import static org.junit.Assert.fail
 
