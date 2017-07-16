@@ -1,4 +1,6 @@
-package com.novoda.buildproperties
+package com.novoda.buildproperties.internal
+
+import com.novoda.buildproperties.Entries
 
 class MapEntries extends Entries {
     private final Map<String, Object> map

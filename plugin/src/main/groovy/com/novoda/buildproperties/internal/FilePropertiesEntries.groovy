@@ -1,5 +1,6 @@
-package com.novoda.buildproperties
+package com.novoda.buildproperties.internal
 
+import com.novoda.buildproperties.Entries
 import org.gradle.api.GradleException
 
 class FilePropertiesEntries extends Entries {
