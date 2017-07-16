@@ -14,16 +14,16 @@ buildProperties {
     '''
     }
     secrets {
-        file rootProject.file('properties/secrets.properties')
+        from rootProject.file('properties/secrets.properties')
     }
     resValues {
-        file rootProject.file('properties/resValues.properties')
+        from rootProject.file('properties/resValues.properties')
     }
     debugSigning {
-        file rootProject.file('properties/debugSigning.properties')
+        from rootProject.file('properties/debugSigning.properties')
     }
     releaseSigning {
-        file rootProject.file('properties/releaseSigning.properties')
+        from rootProject.file('properties/releaseSigning.properties')
     }
     env {
         from System.getenv()

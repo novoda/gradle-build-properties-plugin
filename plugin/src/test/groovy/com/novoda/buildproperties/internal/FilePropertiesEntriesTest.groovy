@@ -2,8 +2,6 @@ package com.novoda.buildproperties.internal
 
 import com.google.common.io.Resources
 import com.novoda.buildproperties.Entry
-import com.novoda.buildproperties.internal.FilePropertiesEntries
-import org.gradle.api.GradleException
 import org.junit.Before
 import org.junit.Test
 
@@ -15,10 +13,11 @@ class FilePropertiesEntriesTest {
     private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
 
     private FilePropertiesEntries entries
-    private ExceptionFactory exceptionFactory = new DefaultExceptionFactory()
+    private ExceptionFactory exceptionFactory
 
     @Before
     void setUp() {
+        exceptionFactory = new DefaultExceptionFactory('foo')
         entries = FilePropertiesEntries.create('any', PROPERTIES_FILE, exceptionFactory)
     }
 
@@ -50,7 +49,7 @@ class FilePropertiesEntriesTest {
             entries['notThere'].string
             fail('Exception expected')
         } catch (Exception e) {
-            assertThat(e.getMessage()).startsWith("No property defined with key 'notThere'")
+            assertThat(e.getMessage()).contains("No property defined with key 'notThere'")
         }
     }
 
@@ -115,7 +114,7 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
+    void shouldThrowExceptionWhenAccessingPropertyFromNonExistentPropertiesFile() {
         entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory)
 
         try {
@@ -128,8 +127,8 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
-        def exceptionFactory = new DefaultExceptionFactory(errorMessage)
+        def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
+        exceptionFactory.additionalMessage = additionalMessage
         entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory)
 
         try {
@@ -138,7 +137,7 @@ class FilePropertiesEntriesTest {
         } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('notThere.properties does not exist.')
-            assertThat(message).endsWith(errorMessage)
+            assertThat(message).endsWith(additionalMessage)
         }
     }
 }

@@ -80,7 +80,7 @@ class BuildPropertiesTest {
     void shouldNotThrowExceptionWhenEntriesFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
-                file project.file('foo.properties')
+                from project.file('foo.properties')
             }
         }
     }
@@ -89,7 +89,7 @@ class BuildPropertiesTest {
     void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
-                file project.file('foo.properties')
+                from project.file('foo.properties')
             }
         }
 
@@ -127,7 +127,7 @@ class BuildPropertiesTest {
 
         project.buildProperties {
             test {
-                file propertiesFile
+                from propertiesFile
             }
         }
 

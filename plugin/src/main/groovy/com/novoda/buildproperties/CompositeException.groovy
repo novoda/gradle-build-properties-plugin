@@ -6,6 +6,10 @@ class CompositeException extends Exception {
 
     private final List<Throwable> exceptions
 
+    static CompositeException from(String message) {
+        from(new Exception(message))
+    }
+
     static CompositeException from(Throwable throwable) {
         return EMPTY.add(throwable)
     }
@@ -32,7 +36,7 @@ class CompositeException extends Exception {
     String getMessage() {
         return exceptions
                 .collect { it.message }
-                .inject('A problem occurred while evaluating entry:', { acc, val -> acc + "\n- $val" })
+                .inject('Build properties evaluation failed:', { acc, val -> acc + "\n- $val" })
     }
 
 }

@@ -1,22 +1,30 @@
 package com.novoda.buildproperties.internal
 
+import com.novoda.buildproperties.CompositeException
+
 class DefaultExceptionFactory implements ExceptionFactory {
 
-    final String additionalMessage
     final ConsoleRenderer consoleRenderer = new ConsoleRenderer()
+    private final String propertiesSetName
+    private String additionalMessage
 
-    DefaultExceptionFactory(String additionalMessage = null) {
+    DefaultExceptionFactory(String propertiesSetName) {
+        this.propertiesSetName = propertiesSetName
+    }
+
+    @Override
+    void setAdditionalMessage(String additionalMessage) {
         this.additionalMessage = additionalMessage
     }
 
     @Override
     Exception fileNotFound(File file) {
-        new FileNotFoundException("File ${consoleRenderer.asClickableFileUrl(file)} does not exist.${formattedAdditionalMessage()}")
+        CompositeException.from("File ${consoleRenderer.asClickableFileUrl(file)} does not exist.${formattedAdditionalMessage()}")
     }
 
     @Override
     Exception propertyNotFound(String key) {
-        new PropertyNotFoundException(key)
+        CompositeException.from("No property defined with key '$key' in properties set '$propertiesSetName'.${formattedAdditionalMessage()}")
     }
 
     private String formattedAdditionalMessage() {

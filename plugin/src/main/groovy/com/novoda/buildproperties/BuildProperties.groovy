@@ -1,16 +1,19 @@
 package com.novoda.buildproperties
 
 import com.novoda.buildproperties.internal.DefaultExceptionFactory
+import com.novoda.buildproperties.internal.ExceptionFactory
 import com.novoda.buildproperties.internal.FilePropertiesEntries
 import com.novoda.buildproperties.internal.MapEntries
 
 class BuildProperties {
 
     private final String name
+    private final ExceptionFactory exceptionFactory
     private Entries entries
 
     BuildProperties(String name) {
         this.name = name
+        this.exceptionFactory = new DefaultExceptionFactory(name)
     }
 
     String getName() {
@@ -18,11 +21,17 @@ class BuildProperties {
     }
 
     void from(Map<String, Object> map) {
-        entries(new MapEntries(map))
+        entries(new MapEntries(map, exceptionFactory))
     }
 
+    void from(File file) {
+        entries(FilePropertiesEntries.create(name ?: file.name, file, exceptionFactory))
+    }
+
+    @Deprecated
     void file(File file, String errorMessage = null) {
-        entries(FilePropertiesEntries.create(name ?: file.name, file, new DefaultExceptionFactory(errorMessage)))
+        exceptionFactory.setAdditionalMessage(errorMessage)
+        entries(FilePropertiesEntries.create(name ?: file.name, file, exceptionFactory))
     }
 
     void entries(Entries entries) {

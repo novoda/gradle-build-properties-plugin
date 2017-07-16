@@ -4,8 +4,10 @@ import com.novoda.buildproperties.Entries
 
 class MapEntries extends Entries {
     private final Map<String, Object> map
+    private final ExceptionFactory exceptionFactory
 
-    MapEntries(Map<String, Object> map) {
+    MapEntries(Map<String, Object> map, ExceptionFactory exceptionFactory) {
+        this.exceptionFactory = exceptionFactory
         this.map = Collections.unmodifiableMap(map)
     }
 
@@ -20,7 +22,7 @@ class MapEntries extends Entries {
         if (value != null) {
             return value
         }
-        throw new IllegalArgumentException("No value defined for key '$key'")
+        throw exceptionFactory.propertyNotFound(key)
     }
 
     @Override
