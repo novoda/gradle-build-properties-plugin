@@ -5,7 +5,7 @@ class DefaultExceptionFactory implements ExceptionFactory {
     final String additionalMessage
     final ConsoleRenderer consoleRenderer = new ConsoleRenderer()
 
-    DefaultExceptionFactory(String additionalMessage) {
+    DefaultExceptionFactory(String additionalMessage = null) {
         this.additionalMessage = additionalMessage
     }
 

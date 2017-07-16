@@ -15,10 +15,11 @@ class FilePropertiesEntriesTest {
     private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
 
     private FilePropertiesEntries entries
+    private ExceptionFactory exceptionFactory = new DefaultExceptionFactory()
 
     @Before
     void setUp() {
-        entries = FilePropertiesEntries.create('any', PROPERTIES_FILE)
+        entries = FilePropertiesEntries.create('any', PROPERTIES_FILE, exceptionFactory)
     }
 
     @Test
@@ -102,8 +103,8 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()))
-        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()))
+        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()), exceptionFactory)
+        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()), exceptionFactory)
 
         entries.keys.each { String key ->
             assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
@@ -115,7 +116,7 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'))
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory)
 
         try {
             entries['any'].string
@@ -128,7 +129,8 @@ class FilePropertiesEntriesTest {
     @Test
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
         def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
-        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), errorMessage)
+        def exceptionFactory = new DefaultExceptionFactory(errorMessage)
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory)
 
         try {
             entries['any'].string

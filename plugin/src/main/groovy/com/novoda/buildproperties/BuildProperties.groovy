@@ -1,5 +1,6 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.DefaultExceptionFactory
 import com.novoda.buildproperties.internal.FilePropertiesEntries
 import com.novoda.buildproperties.internal.MapEntries
 
@@ -21,7 +22,7 @@ class BuildProperties {
     }
 
     void file(File file, String errorMessage = null) {
-        entries(FilePropertiesEntries.create(name ?: file.name, file, errorMessage))
+        entries(FilePropertiesEntries.create(name ?: file.name, file, new DefaultExceptionFactory(errorMessage)))
     }
 
     void entries(Entries entries) {

@@ -1,6 +1,7 @@
 package com.novoda.buildproperties
 
 import com.google.common.io.Resources
+import com.novoda.buildproperties.internal.DefaultExceptionFactory
 import com.novoda.buildproperties.internal.FilePropertiesEntries
 import com.novoda.buildproperties.test.EntrySubject
 import org.gradle.testkit.runner.BuildResult
@@ -126,7 +127,7 @@ class AndroidProjectIntegrationTest {
             releaseBuildConfig = new File(buildDir, 'generated/source/buildConfig/release/com/novoda/buildpropertiesplugin/sample/BuildConfig.java')
             debugResValues = new File(buildDir, 'generated/res/resValues/debug/values/generated.xml')
             releaseResValues = new File(buildDir, 'generated/res/resValues/release/values/generated.xml')
-            secrets = FilePropertiesEntries.create('secrets', new File(projectDir, 'properties/secrets.properties'))
+            secrets = FilePropertiesEntries.create('secrets', new File(projectDir, 'properties/secrets.properties'), new DefaultExceptionFactory())
             return base;
         }
     }

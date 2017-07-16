@@ -7,10 +7,6 @@ class FilePropertiesEntries extends Entries {
     private final String name
     private final Closure<PropertiesProvider> providerClosure
 
-    static FilePropertiesEntries create(String name, File file, String errorMessage = null) {
-        create(name, file, new DefaultExceptionFactory(errorMessage))
-    }
-
     static FilePropertiesEntries create(String name, File file, ExceptionFactory exceptionFactory) {
         new FilePropertiesEntries(name, {
             if (!file.exists()) {
