@@ -18,7 +18,7 @@ class BuildProperties {
     }
 
     void file(File file, String errorMessage = null) {
-        entries(FilePropertiesEntries.create(name, file, errorMessage))
+        entries(FilePropertiesEntries.create(name ?: file.name, file, errorMessage))
     }
 
     void entries(Entries entries) {

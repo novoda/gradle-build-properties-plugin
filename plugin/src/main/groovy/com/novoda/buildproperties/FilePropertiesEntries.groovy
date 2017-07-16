@@ -7,8 +7,8 @@ class FilePropertiesEntries extends Entries {
     private final String name
     private final Closure<PropertiesProvider> providerClosure
 
-    static FilePropertiesEntries create(String name = null, File file, String errorMessage = null) {
-        new FilePropertiesEntries(name ?: file.name, {
+    static FilePropertiesEntries create(String name, File file, String errorMessage = null) {
+        new FilePropertiesEntries(name, {
             if (!file.exists()) {
                 throw new GradleException("File $file.name does not exist.${errorMessage ? "\n$errorMessage" : ''}")
             }
