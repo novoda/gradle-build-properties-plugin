@@ -1,56 +1,91 @@
 package com.novoda.buildproperties
 
+import org.gradle.api.GradleException
+
 class FilePropertiesEntries extends Entries {
 
     private final String name
-    private final File file
-    private final Properties props
-    private final FilePropertiesEntries defaults
-    private final Set<String> keys
+    private final Closure<PropertiesProvider> providerClosure
 
-    static FilePropertiesEntries create(String name = null, File file) {
-        Properties props = new Properties()
-        props.load(new FileInputStream(file))
-
-        FilePropertiesEntries defaults = null
-        String include = props['include']
-        if (include != null) {
-            defaults = create(new File(file.parentFile, include))
-        }
-        new FilePropertiesEntries(name ?: file.name, file, props, defaults)
+    static FilePropertiesEntries create(String name = null, File file, String errorMessage = null) {
+        new FilePropertiesEntries(name ?: file.name, {
+            if (!file.exists()) {
+                throw new GradleException("File $file.name does not exist.${errorMessage ? "\n$errorMessage" : ''}")
+            }
+            PropertiesProvider.create(file)
+        })
     }
 
-    private FilePropertiesEntries(String name, File file, Properties props, FilePropertiesEntries defaults = null) {
+    private FilePropertiesEntries(String name, Closure<PropertiesProvider> providerClosure) {
         this.name = name
-        this.file = file
-        this.props = props
-        this.defaults = defaults
-        this.keys = new HashSet<>(props.stringPropertyNames())
-        if (defaults != null) {
-            this.keys.addAll(defaults.keys)
-        }
+        this.providerClosure = providerClosure.memoize()
+    }
+
+    private PropertiesProvider getProvider() {
+        providerClosure.call()
     }
 
     @Override
     boolean contains(String key) {
-        props[key] != null || defaults?.contains(key)
+        provider.contains(key)
     }
 
     @Override
     protected Object getValueAt(String key) {
-        Object value = props[key]
-        if (value != null) {
-            return value
-        }
-        if (defaults?.contains(key)) {
-            return defaults.getValueAt(key)
-        }
-        throw new IllegalArgumentException("No value defined for property '$key' in '$name' properties ($file.absolutePath)")
+        provider.getValueAt(key)
     }
 
     @Override
     Enumeration<String> getKeys() {
-        Collections.enumeration(keys)
+        provider.keys
+    }
+
+    private static class PropertiesProvider {
+        final File file
+        final Properties properties
+        final PropertiesProvider defaults
+        final Set<String> keys
+
+        static PropertiesProvider create(File file) {
+            Properties properties = new Properties()
+            properties.load(new FileInputStream(file))
+
+            PropertiesProvider defaults = null
+            String include = properties['include']
+            if (include != null) {
+                defaults = create(new File(file.parentFile, include))
+            }
+            new PropertiesProvider(file, properties, defaults)
+        }
+
+        private PropertiesProvider(File file, Properties properties, PropertiesProvider defaults) {
+            this.file = file
+            this.properties = properties
+            this.defaults = defaults
+            this.keys = new HashSet<>(properties.stringPropertyNames())
+            if (defaults != null) {
+                this.keys.addAll(defaults.keys)
+            }
+        }
+
+        boolean contains(String key) {
+            properties[key] != null || defaults?.contains(key)
+        }
+
+        Object getValueAt(String key) {
+            Object value = properties[key]
+            if (value != null) {
+                return value
+            }
+            if (defaults?.contains(key)) {
+                return defaults.getValueAt(key)
+            }
+            throw new IllegalArgumentException("No value defined for property '$key' in properties file $file.absolutePath")
+        }
+
+        Enumeration<String> getKeys() {
+            Collections.enumeration(keys)
+        }
     }
 
 }
