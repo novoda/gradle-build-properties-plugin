@@ -1,6 +1,7 @@
 package com.novoda.buildproperties
 
 import com.google.common.io.Resources
+import com.novoda.buildproperties.internal.ConsoleRenderer
 import com.novoda.buildproperties.internal.DefaultExceptionFactory
 import com.novoda.buildproperties.internal.FilePropertiesEntries
 import com.novoda.buildproperties.test.EntrySubject
@@ -79,7 +80,7 @@ class AndroidProjectIntegrationTest {
 
     @Test
     void shouldEvaluateFallbackWhenNeeded() {
-        EntrySubject.assertThat(PROJECT.secrets['FOO']).willThrow(IllegalArgumentException)
+        EntrySubject.assertThat(PROJECT.secrets['FOO']).willThrow(Exception)
         [PROJECT.debugBuildConfig.text, PROJECT.releaseBuildConfig.text].each { String generatedBuildConfig ->
             assertThat(generatedBuildConfig).contains('public static final String FOO = "bar";')
         }

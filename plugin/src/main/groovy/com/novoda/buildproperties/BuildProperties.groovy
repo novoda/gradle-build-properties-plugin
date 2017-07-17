@@ -1,5 +1,6 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.ConsoleRenderer
 import com.novoda.buildproperties.internal.DefaultExceptionFactory
 import com.novoda.buildproperties.internal.ExceptionFactory
 import com.novoda.buildproperties.internal.FilePropertiesEntries
@@ -28,12 +29,6 @@ class BuildProperties {
         entries(FilePropertiesEntries.create(name ?: file.name, file, exceptionFactory))
     }
 
-    @Deprecated
-    void file(File file, String errorMessage = null) {
-        exceptionFactory.setAdditionalMessage(errorMessage)
-        entries(FilePropertiesEntries.create(name ?: file.name, file, exceptionFactory))
-    }
-
     void entries(Entries entries) {
         this.entries = entries
     }
@@ -44,5 +39,9 @@ class BuildProperties {
 
     Entry getAt(String key) {
         entries.getAt(key)
+    }
+
+    void setDescription(String description) {
+        exceptionFactory.additionalMessage = description
     }
 }

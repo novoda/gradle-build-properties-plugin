@@ -1,5 +1,6 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.ConsoleRenderer
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
@@ -95,9 +96,9 @@ class BuildPropertiesTest {
 
         try {
             project.buildProperties.foo['any'].string
-            fail('Gradle exception not thrown')
+            fail('Exception not thrown')
         } catch (Exception e) {
-            assertThat(e.getMessage()).endsWith('foo.properties does not exist.')
+            assertThat(e.getMessage()).contains('foo.properties does not exist.')
         }
     }
 
@@ -105,19 +106,21 @@ class BuildPropertiesTest {
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
         project.apply plugin: BuildPropertiesPlugin
 
-        def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
+        def description = 'This file should contain the following properties:\n- foo\n- bar'
+        def consoleRenderer = new ConsoleRenderer()
         try {
             project.buildProperties {
                 foo {
-                    file project.file('foo.properties'), errorMessage
+                    from project.file('foo.properties')
+                    setDescription(description)
                 }
             }
             project.buildProperties.foo['any'].string
-            fail('Gradle exception not thrown')
+            fail('Exception not thrown')
         } catch (Exception e) {
             String message = e.getMessage()
-            assertThat(message).contains('foo.properties does not exist.')
-            assertThat(message).endsWith(errorMessage)
+            assertThat(message).contains('does not exist.')
+            assertThat(message).contains(consoleRenderer.indent(description))
         }
     }
 

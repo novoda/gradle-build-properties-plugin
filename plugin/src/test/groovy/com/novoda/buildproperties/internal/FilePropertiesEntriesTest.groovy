@@ -121,13 +121,14 @@ class FilePropertiesEntriesTest {
             entries['any'].string
             fail('Exception not thrown')
         } catch (Exception e) {
-            assertThat(e.getMessage()).endsWith('notThere.properties does not exist.')
+            assertThat(e.getMessage()).contains('notThere.properties does not exist.')
         }
     }
 
     @Test
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
         def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
+        def consoleRenderer = new ConsoleRenderer()
         exceptionFactory.additionalMessage = additionalMessage
         entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory)
 
@@ -137,7 +138,7 @@ class FilePropertiesEntriesTest {
         } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('notThere.properties does not exist.')
-            assertThat(message).endsWith(additionalMessage)
+            assertThat(message).contains(consoleRenderer.indent(additionalMessage))
         }
     }
 }

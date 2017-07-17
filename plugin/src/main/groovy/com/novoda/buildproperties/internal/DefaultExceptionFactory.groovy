@@ -4,12 +4,13 @@ import com.novoda.buildproperties.CompositeException
 
 class DefaultExceptionFactory implements ExceptionFactory {
 
-    final ConsoleRenderer consoleRenderer = new ConsoleRenderer()
     private final String propertiesSetName
+    private final ConsoleRenderer consoleRenderer
     private String additionalMessage
 
-    DefaultExceptionFactory(String propertiesSetName) {
+    DefaultExceptionFactory(String propertiesSetName, ConsoleRenderer consoleRenderer = new ConsoleRenderer()) {
         this.propertiesSetName = propertiesSetName
+        this.consoleRenderer = consoleRenderer
     }
 
     @Override
@@ -28,6 +29,6 @@ class DefaultExceptionFactory implements ExceptionFactory {
     }
 
     private String formattedAdditionalMessage() {
-        additionalMessage ? "\n$additionalMessage" : ''
+        additionalMessage ? "\n${consoleRenderer.indent(additionalMessage)}\n" : '\n'
     }
 }
