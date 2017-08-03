@@ -10,8 +10,8 @@ class ConsoleRenderer {
         this.indentationPrefix = indentationPrefix
     }
 
-    String indent(String text) {
-        "$indentationPrefix${text.replace('\n', "\n$indentationPrefix")}"
+    String indent(String text, String prefix = indentationPrefix) {
+        "$prefix${text.replace('\n', "\n${prefix.inject('', { acc, val -> acc + ' ' })}")}"
     }
 
     String asClickableFileUrl(File path) {

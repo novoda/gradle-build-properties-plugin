@@ -49,7 +49,7 @@ class FilePropertiesEntriesTest {
             entries['notThere'].string
             fail('Exception expected')
         } catch (Exception e) {
-            assertThat(e.getMessage()).contains("No property defined with key 'notThere'")
+            assertThat(e.getMessage()).contains("no value defined for key 'notThere'")
         }
     }
 
@@ -121,7 +121,7 @@ class FilePropertiesEntriesTest {
             entries['any'].string
             fail('Exception not thrown')
         } catch (Exception e) {
-            assertThat(e.getMessage()).contains('notThere.properties does not exist.')
+            assertThat(e.getMessage()).contains('the file does not exist.')
         }
     }
 
@@ -137,8 +137,8 @@ class FilePropertiesEntriesTest {
             fail('Exception not thrown')
         } catch (Exception e) {
             String message = e.getMessage()
-            assertThat(message).contains('notThere.properties does not exist.')
-            assertThat(message).contains(consoleRenderer.indent(additionalMessage))
+            assertThat(message).contains('the file does not exist.')
+            assertThat(message).contains(consoleRenderer.indent(additionalMessage, "* buildProperties.foo: "))
         }
     }
 }

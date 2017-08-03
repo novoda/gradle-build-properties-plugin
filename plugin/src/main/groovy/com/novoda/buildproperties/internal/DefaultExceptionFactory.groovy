@@ -20,15 +20,17 @@ class DefaultExceptionFactory implements ExceptionFactory {
 
     @Override
     Exception fileNotFound(File file) {
-        CompositeException.from("File ${consoleRenderer.asClickableFileUrl(file)} does not exist.${formattedAdditionalMessage()}")
+        CompositeException.from("Properties set 'buildProperties.$propertiesSetName' is defined upon ${consoleRenderer.asClickableFileUrl(file)}, but the file does not exist.", formattedAdditionalMessage())
     }
 
     @Override
     Exception propertyNotFound(String key) {
-        CompositeException.from("No property defined with key '$key' in properties set '$propertiesSetName'.${formattedAdditionalMessage()}")
+        CompositeException.from("Properties set 'buildProperties.$propertiesSetName' has no value defined for key '$key'.", formattedAdditionalMessage())
     }
 
     private String formattedAdditionalMessage() {
-        additionalMessage ? "\n${consoleRenderer.indent(additionalMessage)}\n" : '\n'
+        String prefix = "* buildProperties.$propertiesSetName: "
+        String indent = prefix.inject('', { acc, val -> acc + ' ' })
+        additionalMessage ? "$prefix${additionalMessage.replace('\n', "\n$indent")}" : ''
     }
 }
