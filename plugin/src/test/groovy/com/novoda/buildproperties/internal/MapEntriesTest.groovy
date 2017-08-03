@@ -1,7 +1,6 @@
 package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entry
-import com.novoda.buildproperties.internal.MapEntries
 import org.junit.Test
 
 import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
@@ -50,6 +49,6 @@ class MapEntriesTest {
     }
 
     private static MapEntries givenMapEntries(Map<String, Object> properties) {
-        new MapEntries(properties, new DefaultExceptionFactory('foo'))
+        new MapEntries(properties, new DefaultExceptionFactory('foo'), new AdditionalMessageProvider())
     }
 }

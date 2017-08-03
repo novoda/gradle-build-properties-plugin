@@ -5,10 +5,14 @@ import com.novoda.buildproperties.Entries
 class MapEntries extends Entries {
     private final Map<String, Object> map
     private final ExceptionFactory exceptionFactory
+    private final AdditionalMessageProvider additionalMessageProvider
 
-    MapEntries(Map<String, Object> map, ExceptionFactory exceptionFactory) {
+    MapEntries(Map<String, Object> map,
+               ExceptionFactory exceptionFactory,
+               AdditionalMessageProvider additionalMessageProvider) {
         this.exceptionFactory = exceptionFactory
         this.map = Collections.unmodifiableMap(map)
+        this.additionalMessageProvider = additionalMessageProvider
     }
 
     @Override
@@ -22,7 +26,7 @@ class MapEntries extends Entries {
         if (value != null) {
             return value
         }
-        throw exceptionFactory.propertyNotFound(key)
+        throw exceptionFactory.propertyNotFound(key, additionalMessageProvider.additionalMessage)
     }
 
     @Override

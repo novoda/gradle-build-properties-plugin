@@ -7,12 +7,15 @@ class FilePropertiesEntries extends Entries {
     private final String name
     private final Closure<PropertiesProvider> providerClosure
 
-    static FilePropertiesEntries create(String name, File file, ExceptionFactory exceptionFactory) {
+    static FilePropertiesEntries create(String name,
+                                        File file,
+                                        ExceptionFactory exceptionFactory,
+                                        AdditionalMessageProvider additionalMessageProvider) {
         new FilePropertiesEntries(name, {
             if (!file.exists()) {
-                throw exceptionFactory.fileNotFound(file)
+                throw exceptionFactory.fileNotFound(file, additionalMessageProvider.additionalMessage)
             }
-            PropertiesProvider.create(file, exceptionFactory)
+            PropertiesProvider.create(file, exceptionFactory, additionalMessageProvider)
         })
     }
 
@@ -40,33 +43,37 @@ class FilePropertiesEntries extends Entries {
         provider.keys
     }
 
+
     private static class PropertiesProvider {
         final File file
         final Properties properties
         final PropertiesProvider defaults
         final ExceptionFactory exceptionFactory
+        final AdditionalMessageProvider additionalMessageProvider
         final Set<String> keys
 
-        static PropertiesProvider create(File file, ExceptionFactory exceptionFactory) {
+        static PropertiesProvider create(File file, ExceptionFactory exceptionFactory, AdditionalMessageProvider additionalMessageProvider) {
             Properties properties = new Properties()
             properties.load(new FileInputStream(file))
 
             PropertiesProvider defaults = null
             String include = properties['include']
             if (include != null) {
-                defaults = create(new File(file.parentFile, include), exceptionFactory)
+                defaults = create(new File(file.parentFile, include), exceptionFactory, additionalMessageProvider)
             }
-            new PropertiesProvider(file, properties, defaults, exceptionFactory)
+            new PropertiesProvider(file, properties, defaults, exceptionFactory, additionalMessageProvider)
         }
 
         private PropertiesProvider(File file,
                                    Properties properties,
                                    PropertiesProvider defaults,
-                                   ExceptionFactory exceptionFactory) {
+                                   ExceptionFactory exceptionFactory,
+                                   AdditionalMessageProvider additionalMessageProvider) {
             this.file = file
             this.properties = properties
             this.defaults = defaults
             this.exceptionFactory = exceptionFactory
+            this.additionalMessageProvider = additionalMessageProvider
             this.keys = new HashSet<>(properties.stringPropertyNames())
             if (defaults != null) {
                 this.keys.addAll(defaults.keys)
@@ -85,12 +92,11 @@ class FilePropertiesEntries extends Entries {
             if (defaults?.contains(key)) {
                 return defaults.getValueAt(key)
             }
-            throw exceptionFactory.propertyNotFound(key)
+            throw exceptionFactory.propertyNotFound(key, additionalMessageProvider.additionalMessage)
         }
 
         Enumeration<String> getKeys() {
             Collections.enumeration(keys)
         }
     }
-
 }
