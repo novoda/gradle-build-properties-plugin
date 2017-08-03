@@ -1,11 +1,12 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.BuildPropertiesException
 import org.junit.Test
 
 import static com.google.common.truth.Truth.assertThat
-import static com.novoda.buildproperties.test.CompositeExceptionSubject.assertThat
+import static com.novoda.buildproperties.test.BuildPropertiesExceptionSubject.assertThat
 
-class CompositeExceptionTest {
+class BuildPropertiesExceptionTest {
 
     private static final Exception EXCEPTION_1 = new RuntimeException("exception 1")
     private static final Exception EXCEPTION_2 = new RuntimeException("exception 2")
@@ -13,7 +14,7 @@ class CompositeExceptionTest {
 
     @Test
     void shouldHaveNoCause() {
-        CompositeException compositeException = CompositeException.from(EXCEPTION_1)
+        BuildPropertiesException compositeException = BuildPropertiesException.from(EXCEPTION_1)
 
         Throwable cause = compositeException.cause
 
@@ -22,22 +23,22 @@ class CompositeExceptionTest {
 
     @Test
     void shouldContainWrappedException() {
-        CompositeException compositeException = CompositeException.from(EXCEPTION_1)
+        BuildPropertiesException compositeException = BuildPropertiesException.from(EXCEPTION_1)
 
         assertThat(compositeException).hasMessage(EXCEPTION_1.message)
     }
 
     @Test
     void shouldContainAddedException() {
-        CompositeException compositeException = CompositeException.from(EXCEPTION_1).add(EXCEPTION_2)
+        BuildPropertiesException compositeException = BuildPropertiesException.from(EXCEPTION_1).add(EXCEPTION_2)
 
         assertThat(compositeException).hasMessage(EXCEPTION_1.message, EXCEPTION_2.message)
     }
 
     @Test
     void shouldContainAddedCompositeExceptionMessage() {
-        CompositeException innerException = CompositeException.from(EXCEPTION_1).add(EXCEPTION_2)
-        CompositeException compositeException = innerException.add(EXCEPTION_3)
+        BuildPropertiesException innerException = BuildPropertiesException.from(EXCEPTION_1).add(EXCEPTION_2)
+        BuildPropertiesException compositeException = innerException.add(EXCEPTION_3)
 
         assertThat(compositeException).hasMessage(EXCEPTION_1.message, EXCEPTION_2.message, EXCEPTION_3.message)
     }

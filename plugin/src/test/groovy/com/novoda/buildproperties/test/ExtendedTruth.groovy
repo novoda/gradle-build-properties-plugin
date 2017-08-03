@@ -5,7 +5,7 @@ import com.google.common.base.Optional
 import com.google.common.collect.*
 import com.google.common.truth.*
 import com.google.common.util.concurrent.AtomicLongMap
-import com.novoda.buildproperties.CompositeException
+import com.novoda.buildproperties.internal.BuildPropertiesException
 import com.novoda.buildproperties.Entry
 
 import javax.annotation.Nullable
@@ -21,8 +21,8 @@ final class ExtendedTruth {
         EntrySubject.assertThat(entry)
     }
 
-    static CompositeExceptionSubject assertThat(CompositeException exception) {
-        CompositeExceptionSubject.assertThat(exception)
+    static BuildPropertiesExceptionSubject assertThat(BuildPropertiesException exception) {
+        BuildPropertiesExceptionSubject.assertThat(exception)
     }
 
     static <T extends Comparable<?>> ComparableSubject<?, T> assertThat(@Nullable T target) {

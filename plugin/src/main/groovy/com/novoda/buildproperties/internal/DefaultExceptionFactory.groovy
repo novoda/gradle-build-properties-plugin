@@ -1,7 +1,5 @@
 package com.novoda.buildproperties.internal
 
-import com.novoda.buildproperties.CompositeException
-
 class DefaultExceptionFactory implements ExceptionFactory {
 
     private final String propertiesSetName
@@ -20,12 +18,12 @@ class DefaultExceptionFactory implements ExceptionFactory {
 
     @Override
     Exception fileNotFound(File file) {
-        CompositeException.from("Properties set 'buildProperties.$propertiesSetName' is defined upon ${consoleRenderer.asClickableFileUrl(file)}, but the file does not exist.", formattedAdditionalMessage())
+        BuildPropertiesException.from("Properties set 'buildProperties.$propertiesSetName' is defined upon ${consoleRenderer.asClickableFileUrl(file)}, but the file does not exist.", formattedAdditionalMessage())
     }
 
     @Override
     Exception propertyNotFound(String key) {
-        CompositeException.from("Properties set 'buildProperties.$propertiesSetName' has no value defined for key '$key'.", formattedAdditionalMessage())
+        BuildPropertiesException.from("Properties set 'buildProperties.$propertiesSetName' has no value defined for key '$key'.", formattedAdditionalMessage())
     }
 
     private String formattedAdditionalMessage() {

@@ -1,5 +1,6 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.BuildPropertiesException
 import org.junit.Test
 
 import static com.novoda.buildproperties.test.EntrySubject.assertThat
@@ -36,7 +37,7 @@ class EntryTest {
 
         Entry entryWithFallback = entry1.or(entry2)
 
-        assertThat(entryWithFallback).willThrow(CompositeException.from(EXCEPTION_1).add(EXCEPTION_2))
+        assertThat(entryWithFallback).willThrow(BuildPropertiesException.from(EXCEPTION_1).add(EXCEPTION_2))
     }
 
     @Test
