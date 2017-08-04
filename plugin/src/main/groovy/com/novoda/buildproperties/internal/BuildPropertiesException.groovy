@@ -14,8 +14,8 @@ class BuildPropertiesException extends Exception {
         from(new BuildPropertiesException(new Exception(message), additionalMessage))
     }
 
-    static BuildPropertiesException from(Throwable throwable) {
-        return EMPTY.add(throwable)
+    static BuildPropertiesException from(Exception exception) {
+        return EMPTY.add(exception)
     }
 
     private BuildPropertiesException(Throwable exception, String additionalMessage) {
