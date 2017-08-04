@@ -12,12 +12,12 @@ class DefaultExceptionFactory implements ExceptionFactory {
 
     @Override
     Exception fileNotFound(File file, String additionalMessage) {
-        BuildPropertiesException.from("Properties set 'buildProperties.$propertiesSetName' is defined upon ${consoleRenderer.asClickableFileUrl(file)}, but the file does not exist.", format(additionalMessage))
+        BuildPropertiesException.from("Unable to create properties set 'buildProperties.$propertiesSetName': ${consoleRenderer.asClickableFileUrl(file)} does not exist.", format(additionalMessage))
     }
 
     @Override
     Exception propertyNotFound(String key, String additionalMessage) {
-        BuildPropertiesException.from("Properties set 'buildProperties.$propertiesSetName' has no value defined for key '$key'.", format(additionalMessage))
+        BuildPropertiesException.from("Unable to find value for key '$key' in properties set 'buildProperties.$propertiesSetName'.", format(additionalMessage))
     }
 
     private String format(String additionalMessage) {

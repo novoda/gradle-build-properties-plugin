@@ -98,7 +98,7 @@ class BuildPropertiesTest {
             project.buildProperties.foo['any'].string
             fail('Exception not thrown')
         } catch (Exception e) {
-            assertThat(e.getMessage()).contains('the file does not exist.')
+            assertThat(e.getMessage()).contains('foo.properties does not exist.')
         }
     }
 
@@ -119,7 +119,7 @@ class BuildPropertiesTest {
             fail('Exception not thrown')
         } catch (Exception e) {
             String message = e.getMessage()
-            assertThat(message).contains('does not exist.')
+            assertThat(message).contains('foo.properties does not exist.')
             assertThat(message).contains(consoleRenderer.indent(description, "* buildProperties.foo: "))
         }
     }
