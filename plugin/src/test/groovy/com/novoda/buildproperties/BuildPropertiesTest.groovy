@@ -107,7 +107,6 @@ class BuildPropertiesTest {
         project.apply plugin: BuildPropertiesPlugin
 
         def description = 'This file should contain the following properties:\n- foo\n- bar'
-        def consoleRenderer = new ConsoleRenderer()
         try {
             project.buildProperties {
                 foo {
@@ -120,7 +119,9 @@ class BuildPropertiesTest {
         } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('foo.properties does not exist.')
-            assertThat(message).contains(consoleRenderer.indent(description, "* buildProperties.foo: "))
+            assertThat(message).contains(   '* buildProperties.foo: This file should contain the following properties:\n' +
+                                            '                       - foo\n' +
+                                            '                       - bar')
         }
     }
 
