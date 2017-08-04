@@ -5,7 +5,7 @@ import static java.util.Collections.singletonList
 
 class BuildPropertiesException extends Exception {
 
-    public static final BuildPropertiesException EMPTY = new BuildPropertiesException(emptyList(), emptyList())
+    private static final BuildPropertiesException EMPTY = new BuildPropertiesException(emptyList(), emptyList())
 
     private final List<Throwable> exceptions
     private final List<String> additionalMessages
