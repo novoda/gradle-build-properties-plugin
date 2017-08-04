@@ -4,7 +4,7 @@ import com.google.common.truth.FailureStrategy
 import com.google.common.truth.Subject
 import com.google.common.truth.SubjectFactory
 import com.google.common.truth.Truth
-import com.novoda.buildproperties.CompositeException
+import com.novoda.buildproperties.internal.BuildPropertiesException
 import com.novoda.buildproperties.Entry
 
 import javax.annotation.Nullable
@@ -39,11 +39,11 @@ final class EntrySubject extends Subject<EntrySubject, Entry> {
         actual().string
     }
 
-    void willThrow(CompositeException compositeException) {
+    void willThrow(BuildPropertiesException compositeException) {
         try {
             entryValue
             fail('throws', compositeException)
-        } catch (CompositeException thrown) {
+        } catch (BuildPropertiesException thrown) {
             check().that(thrown.message).isEqualTo(compositeException.message)
         }
     }

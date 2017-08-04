@@ -1,6 +1,6 @@
 package com.novoda.buildproperties
 
-import org.gradle.api.GradleException
+import com.novoda.buildproperties.internal.ConsoleRenderer
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
@@ -81,7 +81,7 @@ class BuildPropertiesTest {
     void shouldNotThrowExceptionWhenEntriesFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
-                file project.file('foo.properties')
+                from project.file('foo.properties')
             }
         }
     }
@@ -90,15 +90,15 @@ class BuildPropertiesTest {
     void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
-                file project.file('foo.properties')
+                from project.file('foo.properties')
             }
         }
 
         try {
             project.buildProperties.foo['any'].string
-            fail('Gradle exception not thrown')
-        } catch (GradleException e) {
-            assertThat(e.getMessage()).endsWith('foo.properties does not exist.')
+            fail('Exception not thrown')
+        } catch (Exception e) {
+            assertThat(e.getMessage()).contains('foo.properties does not exist.')
         }
     }
 
@@ -106,19 +106,22 @@ class BuildPropertiesTest {
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
         project.apply plugin: BuildPropertiesPlugin
 
-        def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
+        def description = 'This file should contain the following properties:\n- foo\n- bar'
         try {
             project.buildProperties {
                 foo {
-                    file project.file('foo.properties'), errorMessage
+                    from project.file('foo.properties')
+                    setDescription(description)
                 }
             }
             project.buildProperties.foo['any'].string
-            fail('Gradle exception not thrown')
-        } catch (GradleException e) {
+            fail('Exception not thrown')
+        } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('foo.properties does not exist.')
-            assertThat(message).endsWith(errorMessage)
+            assertThat(message).contains(   '* buildProperties.foo: This file should contain the following properties:\n' +
+                                            '                       - foo\n' +
+                                            '                       - bar')
         }
     }
 
@@ -128,7 +131,7 @@ class BuildPropertiesTest {
 
         project.buildProperties {
             test {
-                file propertiesFile
+                from propertiesFile
             }
         }
 

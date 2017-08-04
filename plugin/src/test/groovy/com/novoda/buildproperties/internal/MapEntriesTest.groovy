@@ -1,7 +1,6 @@
 package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entry
-import com.novoda.buildproperties.internal.MapEntries
 import org.junit.Test
 
 import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
@@ -10,30 +9,30 @@ class MapEntriesTest {
 
     @Test
     void shouldNotContainUndefinedKey() {
-        def entries = new MapEntries([:])
+        def entries = givenMapEntries([:])
 
         assertThat(entries.contains('notThere')).isFalse()
     }
 
     @Test
-    void shouldThrowWhenEvaluatingUndefinedKey() {
-        def entries = new MapEntries([:])
+    void shouldThrowExceptionWhenEvaluatingUndefinedKey() {
+        def entries = givenMapEntries([:])
 
         Entry entry = entries['notThere']
 
-        assertThat(entry).willThrow(IllegalArgumentException)
+        assertThat(entry).willThrow(Exception)
     }
 
     @Test
     void shouldContainDefinedKey() {
-        def entries = new MapEntries([foo: 'bar'])
+        def entries = givenMapEntries([foo: 'bar'])
 
         assertThat(entries.contains('foo')).isTrue()
     }
 
     @Test
     void shouldProvideValueForDefinedKey() {
-        def entries = new MapEntries([foo: 'bar'])
+        def entries = givenMapEntries([foo: 'bar'])
 
         Entry entry = entries['foo']
 
@@ -42,10 +41,14 @@ class MapEntriesTest {
 
     @Test
     void shouldSupportKeysListing() {
-        def entries = new MapEntries([foo: 'bar', x: 'y'])
+        def entries = givenMapEntries([foo: 'bar', x: 'y'])
 
         Enumeration<String> keys = entries.keys
 
         assertThat(Collections.list(keys)).containsAllOf('foo', 'x')
+    }
+
+    private static MapEntries givenMapEntries(Map<String, Object> properties) {
+        new MapEntries(properties, new DefaultExceptionFactory('foo'), new AdditionalMessageProvider())
     }
 }

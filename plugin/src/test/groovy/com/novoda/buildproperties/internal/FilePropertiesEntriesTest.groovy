@@ -2,8 +2,6 @@ package com.novoda.buildproperties.internal
 
 import com.google.common.io.Resources
 import com.novoda.buildproperties.Entry
-import com.novoda.buildproperties.internal.FilePropertiesEntries
-import org.gradle.api.GradleException
 import org.junit.Before
 import org.junit.Test
 
@@ -14,11 +12,16 @@ class FilePropertiesEntriesTest {
 
     private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
 
+    private ExceptionFactory exceptionFactory
+    private AdditionalMessageProvider additionalMessageProvider
+    
     private FilePropertiesEntries entries
 
     @Before
     void setUp() {
-        entries = FilePropertiesEntries.create('any', PROPERTIES_FILE)
+        additionalMessageProvider = new AdditionalMessageProvider()
+        exceptionFactory = new DefaultExceptionFactory('foo')
+        entries = FilePropertiesEntries.create('any', PROPERTIES_FILE, exceptionFactory, additionalMessageProvider)
     }
 
     @Test
@@ -44,12 +47,12 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldThrowIllegalArgumentExceptionWhenTryingToAccessValueOfUndefinedProperty() {
+    void shouldThrowExceptionWhenTryingToAccessValueOfUndefinedProperty() {
         try {
             entries['notThere'].string
-            fail('IllegalArgumentException expected')
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage()).startsWith("No value defined for property 'notThere'")
+            fail('Exception expected')
+        } catch (Exception e) {
+            assertThat(e.getMessage()).contains("Unable to find value for key 'notThere'")
         }
     }
 
@@ -102,8 +105,8 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()))
-        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()))
+        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()), exceptionFactory, additionalMessageProvider)
+        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()), exceptionFactory, additionalMessageProvider)
 
         entries.keys.each { String key ->
             assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
@@ -114,29 +117,31 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'))
+    void shouldThrowExceptionWhenAccessingPropertyFromNonExistentPropertiesFile() {
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory, additionalMessageProvider)
 
         try {
             entries['any'].string
-            fail('Gradle exception not thrown')
-        } catch (GradleException e) {
-            assertThat(e.getMessage()).endsWith('notThere.properties does not exist.')
+            fail('Exception not thrown')
+        } catch (Exception e) {
+            assertThat(e.getMessage()).contains('notThere.properties does not exist.')
         }
     }
 
     @Test
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        def errorMessage = 'This file should contain the following properties:\n- foo\n- bar'
-        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), errorMessage)
+        def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
+        def consoleRenderer = new ConsoleRenderer()
+        additionalMessageProvider.additionalMessage = additionalMessage
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory, additionalMessageProvider)
 
         try {
             entries['any'].string
-            fail('Gradle exception not thrown')
-        } catch (GradleException e) {
+            fail('Exception not thrown')
+        } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('notThere.properties does not exist.')
-            assertThat(message).endsWith(errorMessage)
+            assertThat(message).contains(consoleRenderer.indent(additionalMessage, "* buildProperties.foo: "))
         }
     }
 }

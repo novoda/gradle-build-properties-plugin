@@ -2,10 +2,17 @@ package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entries
 
+import javax.inject.Provider
+
 class MapEntries extends Entries {
     private final Map<String, Object> map
+    private final ExceptionFactory exceptionFactory
 
-    MapEntries(Map<String, Object> map) {
+    MapEntries(Map<String, Object> map,
+               ExceptionFactory exceptionFactory,
+               Provider<String> additionalMessageProvider) {
+        super(additionalMessageProvider)
+        this.exceptionFactory = exceptionFactory
         this.map = Collections.unmodifiableMap(map)
     }
 
@@ -15,12 +22,12 @@ class MapEntries extends Entries {
     }
 
     @Override
-    protected Object getValueAt(String key) {
+    protected Object getValueAt(String key, String additionalMessage) {
         Object value = map.get(key)
         if (value != null) {
             return value
         }
-        throw new IllegalArgumentException("No value defined for key '$key'")
+        throw exceptionFactory.propertyNotFound(key, additionalMessage)
     }
 
     @Override
