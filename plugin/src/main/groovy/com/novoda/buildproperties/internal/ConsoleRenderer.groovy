@@ -16,9 +16,9 @@ class ConsoleRenderer {
 
     String asClickableFileUrl(File path) {
         try {
-            (new URI("file", "", path.toURI().getPath(), null, null)).toString()
-        } catch (URISyntaxException var3) {
-            throw UncheckedException.throwAsUncheckedException(var3);
+            new URI("file", "", path.toURI().getPath(), null, null).toString()
+        } catch (URISyntaxException exception) {
+            throw UncheckedException.throwAsUncheckedException(exception)
         }
     }
 }
