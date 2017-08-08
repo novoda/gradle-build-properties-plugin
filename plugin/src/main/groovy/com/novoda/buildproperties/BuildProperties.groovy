@@ -23,11 +23,11 @@ class BuildProperties {
         name
     }
 
-    void from(Map<String, Object> map) {
+    void using(Map<String, Object> map) {
         entries(new MapEntries(map, exceptionFactory, additionalMessageProvider))
     }
 
-    void from(File file) {
+    void using(File file) {
         entries(FilePropertiesEntries.create(name ?: file.name, file, exceptionFactory, additionalMessageProvider))
     }
 
