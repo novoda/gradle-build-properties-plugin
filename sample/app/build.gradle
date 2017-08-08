@@ -9,27 +9,27 @@ apply plugin: com.novoda.buildproperties.BuildPropertiesPlugin
 
 buildProperties {
     notThere {
-        from rootProject.file('whatever')
+        using rootProject.file('whatever')
         description =   'This file actually doesn\'t exist. This properties set is used to show how\n' +
                         'properties files are lazy loaded.'
     }
     secrets {
-        from rootProject.file('properties/secrets.properties')
+        using rootProject.file('properties/secrets.properties')
     }
     resValues {
-        from rootProject.file('properties/resValues.properties')
+        using rootProject.file('properties/resValues.properties')
     }
     debugSigning {
-        from rootProject.file('properties/debugSigning.properties')
+        using rootProject.file('properties/debugSigning.properties')
     }
     releaseSigning {
-        from rootProject.file('properties/releaseSigning.properties')
+        using rootProject.file('properties/releaseSigning.properties')
     }
     env {
-        from System.getenv()
+        using System.getenv()
     }
     cli {
-        from project.properties
+        using project.properties
     }
 }
 

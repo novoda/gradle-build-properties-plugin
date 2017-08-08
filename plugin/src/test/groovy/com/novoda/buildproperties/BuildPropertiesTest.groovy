@@ -34,7 +34,7 @@ class BuildPropertiesTest {
     void shouldReturnMapValuesWhenEntriesFromMap() {
         project.buildProperties {
             map {
-                from([a: 'value_a', b: 'value_b', c: 'value_c'])
+                using([a: 'value_a', b: 'value_b', c: 'value_c'])
             }
         }
 
@@ -51,7 +51,7 @@ class BuildPropertiesTest {
 
         project.buildProperties {
             env {
-                from System.getenv()
+                using System.getenv()
             }
         }
 
@@ -68,7 +68,7 @@ class BuildPropertiesTest {
 
         project.buildProperties {
             prj {
-                from project.properties
+                using project.properties
             }
         }
 
@@ -81,7 +81,7 @@ class BuildPropertiesTest {
     void shouldNotThrowExceptionWhenEntriesFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
-                from project.file('foo.properties')
+                using project.file('foo.properties')
             }
         }
     }
@@ -90,7 +90,7 @@ class BuildPropertiesTest {
     void shouldThrowWhenAccessingPropertyFromNonExistentPropertiesFile() {
         project.buildProperties {
             foo {
-                from project.file('foo.properties')
+                using project.file('foo.properties')
             }
         }
 
@@ -110,7 +110,7 @@ class BuildPropertiesTest {
         try {
             project.buildProperties {
                 foo {
-                    from project.file('foo.properties')
+                    using project.file('foo.properties')
                     setDescription(description)
                 }
             }
@@ -131,7 +131,7 @@ class BuildPropertiesTest {
 
         project.buildProperties {
             test {
-                from propertiesFile
+                using propertiesFile
             }
         }
 
