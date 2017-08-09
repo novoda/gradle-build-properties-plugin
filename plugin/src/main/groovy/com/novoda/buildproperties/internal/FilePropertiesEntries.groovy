@@ -1,8 +1,6 @@
 package com.novoda.buildproperties.internal
 
-import com.novoda.buildproperties.Entries
-
-class FilePropertiesEntries extends Entries {
+class FilePropertiesEntries extends AbstractEntries {
 
     private final String name
     private final Closure<PropertiesProvider> providerClosure

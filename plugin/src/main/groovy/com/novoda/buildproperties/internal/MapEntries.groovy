@@ -1,10 +1,8 @@
 package com.novoda.buildproperties.internal
 
-import com.novoda.buildproperties.Entries
-
 import javax.inject.Provider
 
-class MapEntries extends Entries {
+class MapEntries extends AbstractEntries {
     private final Map<String, Object> map
     private final ExceptionFactory exceptionFactory
 

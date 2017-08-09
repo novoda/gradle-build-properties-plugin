@@ -14,7 +14,7 @@ class FilePropertiesEntriesTest {
 
     private ExceptionFactory exceptionFactory
     private AdditionalMessageProvider additionalMessageProvider
-    
+
     private FilePropertiesEntries entries
 
     @Before
