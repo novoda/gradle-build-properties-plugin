@@ -104,19 +104,6 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()), exceptionFactory, additionalMessageProvider)
-        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()), exceptionFactory, additionalMessageProvider)
-
-        entries.keys.each { String key ->
-            assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
-        }
-        assertThat(moreEntries['foo'].string).isEqualTo(includingEntries['foo'].string)
-        assertThat(moreEntries['a'].string).isEqualTo('android')
-        assertThat(includingEntries['a'].string).isEqualTo('apple')
-    }
-
-    @Test
     void shouldThrowExceptionWhenAccessingPropertyFromNonExistentPropertiesFile() {
         entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory, additionalMessageProvider)
 
