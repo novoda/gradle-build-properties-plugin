@@ -1,6 +1,5 @@
 package com.novoda.buildproperties
 
-import com.novoda.buildproperties.internal.ConsoleRenderer
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
@@ -119,9 +118,9 @@ class BuildPropertiesTest {
         } catch (Exception e) {
             String message = e.getMessage()
             assertThat(message).contains('foo.properties does not exist.')
-            assertThat(message).contains(   '* buildProperties.foo: This file should contain the following properties:\n' +
-                                            '                       - foo\n' +
-                                            '                       - bar')
+            assertThat(message).contains('* buildProperties.foo: This file should contain the following properties:\n' +
+                    '                       - foo\n' +
+                    '                       - bar')
         }
     }
 
@@ -138,6 +137,74 @@ class BuildPropertiesTest {
         assertThat(project.buildProperties.test['d']).hasValue('value_d')
         assertThat(project.buildProperties.test['e']).hasValue('value_e')
         assertThat(project.buildProperties.test['f']).hasValue('value_f')
+    }
+
+    @Test
+    void shouldContainAllPropertiesFromFallbackSet() {
+        File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
+
+        project.buildProperties {
+            map {
+                using([a: 'value_a', b: 'value_b', c: 'value_c'])
+            }
+            other {
+                using propertiesFile
+                fallback map
+            }
+        }
+
+        assertThat(project.buildProperties.other['a']).hasValue('value_a')
+        assertThat(project.buildProperties.other['b']).hasValue('value_b')
+        assertThat(project.buildProperties.other['c']).hasValue('value_c')
+        assertThat(project.buildProperties.other['d']).hasValue('value_d')
+        assertThat(project.buildProperties.other['e']).hasValue('value_e')
+        assertThat(project.buildProperties.other['f']).hasValue('value_f')
+    }
+
+    @Test
+    void shouldIgnorePropertyFromFallbackSetWhenAlreadyDefined() {
+        File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
+
+        project.buildProperties {
+            map {
+                using([a: 'value_a', b: 'value_b', c: 'value_c', e: 'random'])
+            }
+            other {
+                using propertiesFile
+                fallback map
+            }
+        }
+
+        assertThat(project.buildProperties.other['a']).hasValue('value_a')
+        assertThat(project.buildProperties.other['b']).hasValue('value_b')
+        assertThat(project.buildProperties.other['c']).hasValue('value_c')
+        assertThat(project.buildProperties.other['d']).hasValue('value_d')
+        assertThat(project.buildProperties.other['e']).hasValue('value_e')
+        assertThat(project.buildProperties.other['f']).hasValue('value_f')
+    }
+
+    @Test
+    void shouldMentionFallbackSetWhenPropertyNotfound() {
+        File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
+
+        project.buildProperties {
+            map {
+                using([a: 'value_a', b: 'value_b', c: 'value_c', e: 'random'])
+            }
+            other {
+                using propertiesFile
+                fallback map
+            }
+        }
+
+        try {
+            project.buildProperties.other['notThere'].string
+            fail('Exception not thrown')
+        } catch (Exception e) {
+            String message = e.getMessage()
+            assertThat(message).contains('- Unable to find value for key \'notThere\' in properties set \'buildProperties.other\'')
+            assertThat(message).contains('- Unable to find value for key \'notThere\' in properties set \'buildProperties.map\'')
+        }
     }
 
     private File newPropertiesFile(String fileName, String fileContent) {

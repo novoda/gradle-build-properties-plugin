@@ -1,10 +1,6 @@
 package com.novoda.buildproperties
 
-import com.novoda.buildproperties.internal.AdditionalMessageProvider
-import com.novoda.buildproperties.internal.DefaultExceptionFactory
-import com.novoda.buildproperties.internal.ExceptionFactory
-import com.novoda.buildproperties.internal.FilePropertiesEntries
-import com.novoda.buildproperties.internal.MapEntries
+import com.novoda.buildproperties.internal.*
 
 class BuildProperties {
 
@@ -12,6 +8,7 @@ class BuildProperties {
     private final ExceptionFactory exceptionFactory
     private final AdditionalMessageProvider additionalMessageProvider
     private Entries entries
+    private BuildProperties fallback
 
     BuildProperties(String name) {
         this.name = name
@@ -36,14 +33,33 @@ class BuildProperties {
     }
 
     Enumeration<String> getKeys() {
-        entries.keys
+        if (fallback == null) {
+            return entries.keys
+        }
+        HashSet<String> keys = new HashSet<>()
+        def enumeration = entries.keys
+        while (enumeration.hasMoreElements()) {
+            keys.add(enumeration.nextElement())
+        }
+        enumeration = fallback.keys
+        while (enumeration.hasMoreElements()) {
+            keys.add(enumeration.nextElement())
+        }
+        return Collections.enumeration(keys)
     }
 
     Entry getAt(String key) {
-        entries.getAt(key)
+        if (fallback == null) {
+            return entries.getAt(key)
+        }
+        return entries.getAt(key).or(fallback.getAt(key))
     }
 
     void setDescription(String description) {
         additionalMessageProvider.setAdditionalMessage(description)
+    }
+
+    void fallback(BuildProperties properties) {
+        this.fallback = properties
     }
 }
