@@ -95,52 +95,6 @@ A problem occurred while evaluating entry:
 
 ```
 
-#### Properties inheritance
-It might be useful to have properties files that can recursively include
-other properties files (specified via an `include` property).
-Inherited properties can be overridden by the including set, just redefine
-the property in the file and its value will be used instead of the one
-from the included set.
-
-For example, given a generic properties file `config.properties`:
-
-```properties
-foo=bar
-aKey=aValue
-```
-
-you can override values and add additional ones in another properties file `debug.properties`:
-
-```properties
-include=/path/to/config.properties
-aNewKey=aNewValue
-aKey=overriddenPreviousValue
-```
-
-Then in your `build.gradle`:
-
-```gradle
-buildProperties {
-    secrets {
-        file rootProject.file('debug.properties')
-    }
-}
-
-...
-
-android {
-    ...
-
-    defaultConfig {
-        ...
-        buildConfigString 'FOO', buildProperties.secrets['foo'] // bar
-        buildConfigString 'A_KEY', buildProperties.secrets['aKey'] // overriddenPreviousValue
-        buildConfigString 'A_NEW_KEY', buildProperties.secrets['aNewKey'] // aNewValue
-        ...
-    }
-}
-```
-
 #### More on loading properties
 If the specified file is not found an exception is thrown at build time as soon as one of its properties is evaluated.
 You can specify a custom error message to provide the user with more information, eg:
@@ -155,7 +109,6 @@ buildProperties {
     }
 }
 ```
-
 
 ## Android-specific features
 
