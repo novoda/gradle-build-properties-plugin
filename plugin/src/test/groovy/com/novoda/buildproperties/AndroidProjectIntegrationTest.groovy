@@ -96,7 +96,7 @@ class AndroidProjectIntegrationTest {
 
     @Test
     void shouldSignReleaseBuildUsingProperties() throws Exception {
-        assertThat(new File(PROJECT.apkDir, 'app-release.apk').exists()).isTrue()
+        assertThat(new File(PROJECT.apkDir, 'release/app-release.apk').exists()).isTrue()
     }
 
     static class ProjectRule implements TestRule {
