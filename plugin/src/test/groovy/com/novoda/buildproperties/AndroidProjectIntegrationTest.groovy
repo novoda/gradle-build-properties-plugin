@@ -131,7 +131,7 @@ class AndroidProjectIntegrationTest {
                     new File(projectDir, 'properties/secrets.properties'),
                     new DefaultExceptionFactory('secrets')
             )
-            return base;
+            return base
         }
     }
 
