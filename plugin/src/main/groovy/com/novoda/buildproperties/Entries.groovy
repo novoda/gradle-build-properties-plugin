@@ -1,13 +1,8 @@
 package com.novoda.buildproperties
 
-import javax.inject.Provider
-
 abstract class Entries {
 
-    private final Provider<String> additionalMessageProvider
-
-    Entries(Provider<String> additionalMessageProvider) {
-        this.additionalMessageProvider = additionalMessageProvider
+    Entries() {
     }
 
     abstract boolean contains(String key)
@@ -21,8 +16,4 @@ abstract class Entries {
     }
 
     abstract Enumeration<String> getKeys()
-
-    final String getAdditionalMessage() {
-        additionalMessageProvider.get()
-    }
 }

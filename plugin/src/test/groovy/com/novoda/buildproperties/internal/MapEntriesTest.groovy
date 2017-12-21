@@ -49,6 +49,6 @@ class MapEntriesTest {
     }
 
     private static MapEntries givenMapEntries(Map<String, Object> properties) {
-        new MapEntries(properties, new DefaultExceptionFactory('foo'), new AdditionalMessageProvider())
+        new MapEntries(properties, new DefaultExceptionFactory('foo'))
     }
 }

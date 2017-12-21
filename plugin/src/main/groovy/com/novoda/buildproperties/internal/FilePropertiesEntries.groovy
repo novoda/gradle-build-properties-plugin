@@ -9,18 +9,17 @@ class FilePropertiesEntries extends Entries {
 
     static FilePropertiesEntries create(String name,
                                         File file,
-                                        ExceptionFactory exceptionFactory,
-                                        AdditionalMessageProvider additionalMessageProvider) {
+                                        ExceptionFactory exceptionFactory) {
         new FilePropertiesEntries(name, {
             if (!file.exists()) {
                 throw exceptionFactory.fileNotFound(file)
             }
             PropertiesProvider.create(file, exceptionFactory)
-        }, additionalMessageProvider)
+        })
     }
 
-    private FilePropertiesEntries(String name, Closure<PropertiesProvider> providerClosure, AdditionalMessageProvider additionalMessageProvider) {
-        super(additionalMessageProvider)
+    private FilePropertiesEntries(String name, Closure<PropertiesProvider> providerClosure) {
+        super()
         this.name = name
         this.providerClosure = providerClosure.memoize()
     }
