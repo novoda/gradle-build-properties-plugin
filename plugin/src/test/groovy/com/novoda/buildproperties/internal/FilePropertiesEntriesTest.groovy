@@ -12,7 +12,7 @@ class FilePropertiesEntriesTest {
 
     private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
 
-    private ExceptionFactory exceptionFactory
+    private DefaultExceptionFactory exceptionFactory
     private AdditionalMessageProvider additionalMessageProvider
     
     private FilePropertiesEntries entries
@@ -21,7 +21,7 @@ class FilePropertiesEntriesTest {
     void setUp() {
         additionalMessageProvider = new AdditionalMessageProvider()
         exceptionFactory = new DefaultExceptionFactory('foo')
-        entries = FilePropertiesEntries.create('any', PROPERTIES_FILE, exceptionFactory, additionalMessageProvider)
+        entries = FilePropertiesEntries.create('any', PROPERTIES_FILE, exceptionFactory)
     }
 
     @Test
@@ -105,8 +105,8 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()), exceptionFactory, additionalMessageProvider)
-        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()), exceptionFactory, additionalMessageProvider)
+        def moreEntries = FilePropertiesEntries.create('more', new File(Resources.getResource('more.properties').toURI()), exceptionFactory)
+        def includingEntries = FilePropertiesEntries.create('including', new File(Resources.getResource('including.properties').toURI()), exceptionFactory)
 
         entries.keys.each { String key ->
             assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
@@ -118,7 +118,7 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldThrowExceptionWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory, additionalMessageProvider)
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory)
 
         try {
             entries['any'].string
@@ -132,8 +132,8 @@ class FilePropertiesEntriesTest {
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
         def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
         def consoleRenderer = new ConsoleRenderer()
-        additionalMessageProvider.additionalMessage = additionalMessage
-        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory, additionalMessageProvider)
+        exceptionFactory.additionalMessage = additionalMessage
+        entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory)
 
         try {
             entries['any'].string
