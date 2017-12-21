@@ -12,7 +12,7 @@ class FilePropertiesEntriesTest {
 
     private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
 
-    private ExceptionFactory exceptionFactory
+    private DefaultExceptionFactory exceptionFactory
     private AdditionalMessageProvider additionalMessageProvider
     
     private FilePropertiesEntries entries
@@ -132,7 +132,7 @@ class FilePropertiesEntriesTest {
     void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
         def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
         def consoleRenderer = new ConsoleRenderer()
-        additionalMessageProvider.additionalMessage = additionalMessage
+        exceptionFactory.additionalMessage = additionalMessage
         entries = FilePropertiesEntries.create('notThere', new File('notThere.properties'), exceptionFactory, additionalMessageProvider)
 
         try {

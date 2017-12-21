@@ -9,7 +9,7 @@ import com.novoda.buildproperties.internal.MapEntries
 class BuildProperties {
 
     private final String name
-    private final ExceptionFactory exceptionFactory
+    private final DefaultExceptionFactory exceptionFactory
     private final AdditionalMessageProvider additionalMessageProvider
     private Entries entries
 
@@ -44,6 +44,6 @@ class BuildProperties {
     }
 
     void setDescription(String description) {
-        additionalMessageProvider.setAdditionalMessage(description)
+        exceptionFactory.additionalMessage = description
     }
 }
