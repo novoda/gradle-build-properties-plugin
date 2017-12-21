@@ -22,7 +22,7 @@ class MapEntries extends Entries {
     }
 
     @Override
-    protected Object getValueAt(String key, String additionalMessage) {
+    protected Object getValueAt(String key) {
         Object value = map.get(key)
         if (value != null) {
             return value
