@@ -13,7 +13,7 @@ class FilePropertiesEntries extends Entries {
                                         AdditionalMessageProvider additionalMessageProvider) {
         new FilePropertiesEntries(name, {
             if (!file.exists()) {
-                throw exceptionFactory.fileNotFound(file, additionalMessageProvider.additionalMessage)
+                throw exceptionFactory.fileNotFound(file)
             }
             PropertiesProvider.create(file, exceptionFactory, additionalMessageProvider)
         }, additionalMessageProvider)
@@ -90,7 +90,7 @@ class FilePropertiesEntries extends Entries {
             if (defaults?.contains(key)) {
                 return defaults.getValueAt(key, additionalMessage)
             }
-            throw exceptionFactory.propertyNotFound(key, additionalMessage)
+            throw exceptionFactory.propertyNotFound(key)
         }
 
         Enumeration<String> getKeys() {

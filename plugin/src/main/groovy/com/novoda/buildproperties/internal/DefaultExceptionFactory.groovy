@@ -11,13 +11,13 @@ class DefaultExceptionFactory extends AdditionalMessageProvider implements Excep
     }
 
     @Override
-    Exception fileNotFound(File file, String additionalMessage) {
+    Exception fileNotFound(File file) {
         String message = "Unable to create properties set 'buildProperties.$propertiesSetName': ${consoleRenderer.asClickableFileUrl(file)} does not exist."
         BuildPropertiesException.from(message, format(getAdditionalMessage()))
     }
 
     @Override
-    Exception propertyNotFound(String key, String additionalMessage) {
+    Exception propertyNotFound(String key) {
         String message = "Unable to find value for key '$key' in properties set 'buildProperties.$propertiesSetName'."
         BuildPropertiesException.from(message, format(getAdditionalMessage()))
     }

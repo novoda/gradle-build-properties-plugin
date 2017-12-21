@@ -27,7 +27,7 @@ class MapEntries extends Entries {
         if (value != null) {
             return value
         }
-        throw exceptionFactory.propertyNotFound(key, additionalMessage)
+        throw exceptionFactory.propertyNotFound(key)
     }
 
     @Override
