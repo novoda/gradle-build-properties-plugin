@@ -1,6 +1,6 @@
 package com.novoda.buildproperties.internal
 
-class DefaultExceptionFactory implements ExceptionFactory {
+class DefaultExceptionFactory extends AdditionalMessageProvider implements ExceptionFactory {
 
     private final String propertiesSetName
     private final ConsoleRenderer consoleRenderer
