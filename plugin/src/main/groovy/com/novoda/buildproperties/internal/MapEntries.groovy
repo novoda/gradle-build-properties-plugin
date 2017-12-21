@@ -2,16 +2,13 @@ package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entries
 
-import javax.inject.Provider
-
 class MapEntries extends Entries {
     private final Map<String, Object> map
     private final ExceptionFactory exceptionFactory
 
     MapEntries(Map<String, Object> map,
-               ExceptionFactory exceptionFactory,
-               Provider<String> additionalMessageProvider) {
-        super(additionalMessageProvider)
+               ExceptionFactory exceptionFactory) {
+        super()
         this.exceptionFactory = exceptionFactory
         this.map = Collections.unmodifiableMap(map)
     }
@@ -22,12 +19,12 @@ class MapEntries extends Entries {
     }
 
     @Override
-    protected Object getValueAt(String key, String additionalMessage) {
+    protected Object getValueAt(String key) {
         Object value = map.get(key)
         if (value != null) {
             return value
         }
-        throw exceptionFactory.propertyNotFound(key, additionalMessage)
+        throw exceptionFactory.propertyNotFound(key)
     }
 
     @Override

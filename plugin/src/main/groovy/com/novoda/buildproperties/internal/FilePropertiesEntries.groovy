@@ -9,18 +9,17 @@ class FilePropertiesEntries extends Entries {
 
     static FilePropertiesEntries create(String name,
                                         File file,
-                                        ExceptionFactory exceptionFactory,
-                                        AdditionalMessageProvider additionalMessageProvider) {
+                                        ExceptionFactory exceptionFactory) {
         new FilePropertiesEntries(name, {
             if (!file.exists()) {
-                throw exceptionFactory.fileNotFound(file, additionalMessageProvider.additionalMessage)
+                throw exceptionFactory.fileNotFound(file)
             }
-            PropertiesProvider.create(file, exceptionFactory, additionalMessageProvider)
-        }, additionalMessageProvider)
+            PropertiesProvider.create(file, exceptionFactory)
+        })
     }
 
-    private FilePropertiesEntries(String name, Closure<PropertiesProvider> providerClosure, AdditionalMessageProvider additionalMessageProvider) {
-        super(additionalMessageProvider)
+    private FilePropertiesEntries(String name, Closure<PropertiesProvider> providerClosure) {
+        super()
         this.name = name
         this.providerClosure = providerClosure.memoize()
     }
@@ -35,8 +34,8 @@ class FilePropertiesEntries extends Entries {
     }
 
     @Override
-    protected Object getValueAt(String key, String additionalMessage) {
-        provider.getValueAt(key, additionalMessage)
+    protected Object getValueAt(String key) {
+        provider.getValueAt(key)
     }
 
     @Override
@@ -52,14 +51,14 @@ class FilePropertiesEntries extends Entries {
         final ExceptionFactory exceptionFactory
         final Set<String> keys
 
-        static PropertiesProvider create(File file, ExceptionFactory exceptionFactory, AdditionalMessageProvider additionalMessageProvider) {
+        static PropertiesProvider create(File file, ExceptionFactory exceptionFactory) {
             Properties properties = new Properties()
             properties.load(new FileInputStream(file))
 
             PropertiesProvider defaults = null
             String include = properties['include']
             if (include != null) {
-                defaults = create(new File(file.parentFile, include), exceptionFactory, additionalMessageProvider)
+                defaults = create(new File(file.parentFile, include), exceptionFactory)
             }
             new PropertiesProvider(file, properties, defaults, exceptionFactory)
         }
@@ -82,15 +81,15 @@ class FilePropertiesEntries extends Entries {
             properties[key] != null || defaults?.contains(key)
         }
 
-        Object getValueAt(String key, String additionalMessage) {
+        Object getValueAt(String key) {
             Object value = properties[key]
             if (value != null) {
                 return value
             }
             if (defaults?.contains(key)) {
-                return defaults.getValueAt(key, additionalMessage)
+                return defaults.getValueAt(key)
             }
-            throw exceptionFactory.propertyNotFound(key, additionalMessage)
+            throw exceptionFactory.propertyNotFound(key)
         }
 
         Enumeration<String> getKeys() {

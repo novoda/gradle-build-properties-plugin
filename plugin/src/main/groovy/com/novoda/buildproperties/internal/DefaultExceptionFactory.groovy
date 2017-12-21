@@ -1,6 +1,6 @@
 package com.novoda.buildproperties.internal
 
-class DefaultExceptionFactory implements ExceptionFactory {
+class DefaultExceptionFactory extends AdditionalMessageProvider implements ExceptionFactory {
 
     private final String propertiesSetName
     private final ConsoleRenderer consoleRenderer
@@ -11,13 +11,15 @@ class DefaultExceptionFactory implements ExceptionFactory {
     }
 
     @Override
-    Exception fileNotFound(File file, String additionalMessage) {
-        BuildPropertiesException.from("Unable to create properties set 'buildProperties.$propertiesSetName': ${consoleRenderer.asClickableFileUrl(file)} does not exist.", format(additionalMessage))
+    Exception fileNotFound(File file) {
+        String message = "Unable to create properties set 'buildProperties.$propertiesSetName': ${consoleRenderer.asClickableFileUrl(file)} does not exist."
+        BuildPropertiesException.from(message, format(additionalMessage))
     }
 
     @Override
-    Exception propertyNotFound(String key, String additionalMessage) {
-        BuildPropertiesException.from("Unable to find value for key '$key' in properties set 'buildProperties.$propertiesSetName'.", format(additionalMessage))
+    Exception propertyNotFound(String key) {
+        String message = "Unable to find value for key '$key' in properties set 'buildProperties.$propertiesSetName'."
+        BuildPropertiesException.from(message, format(additionalMessage))
     }
 
     private String format(String additionalMessage) {

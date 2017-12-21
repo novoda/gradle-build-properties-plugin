@@ -1,7 +1,6 @@
 package com.novoda.buildproperties
 
 import com.google.common.io.Resources
-import com.novoda.buildproperties.internal.AdditionalMessageProvider
 import com.novoda.buildproperties.internal.DefaultExceptionFactory
 import com.novoda.buildproperties.internal.FilePropertiesEntries
 import com.novoda.buildproperties.test.EntrySubject
@@ -130,9 +129,9 @@ class AndroidProjectIntegrationTest {
             releaseResValues = new File(buildDir, 'generated/res/resValues/release/values/generated.xml')
             secrets = FilePropertiesEntries.create('secrets',
                     new File(projectDir, 'properties/secrets.properties'),
-                    new DefaultExceptionFactory('secrets'),
-                    new AdditionalMessageProvider())
-            return base;
+                    new DefaultExceptionFactory('secrets')
+            )
+            return base
         }
     }
 
