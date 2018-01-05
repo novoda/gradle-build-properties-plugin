@@ -8,6 +8,9 @@ apply plugin: 'com.android.application'
 apply plugin: com.novoda.buildproperties.BuildPropertiesPlugin
 
 buildProperties {
+    defaults {
+        using ([a: 'a', b: 'b'])
+    }
     notThere {
         using rootProject.file('whatever')
         description =   'This file actually doesn\'t exist. This properties set is used to show how\n' +
@@ -15,7 +18,11 @@ buildProperties {
     }
     secrets {
         using rootProject.file('properties/secrets.properties')
+<<<<<<< Updated upstream
         fallback notThere
+=======
+        fallback defaults
+>>>>>>> Stashed changes
     }
     resValues {
         using rootProject.file('properties/resValues.properties')
@@ -54,6 +61,7 @@ android {
         buildConfigString 'SUPER_SECRET', buildProperties.secrets['superSecret']
         buildConfigString 'FOO', buildProperties.secrets['notThere'].or(buildProperties.notThere['foo']).or('bar')
         buildConfigString 'WAT', buildProperties.env['WAT'].or('?!?')
+        buildConfigString 'A', buildProperties.secrets['v']
     }
 
     signingConfigs.all { signingConfig ->
