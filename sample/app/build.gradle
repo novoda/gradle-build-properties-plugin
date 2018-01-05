@@ -15,6 +15,7 @@ buildProperties {
     }
     secrets {
         using rootProject.file('properties/secrets.properties')
+        fallback notThere
     }
     resValues {
         using rootProject.file('properties/resValues.properties')
