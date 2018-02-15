@@ -1,8 +1,10 @@
 package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entries
+import com.novoda.buildproperties.Entry
+import com.novoda.buildproperties.ExceptionFactory
 
-class FilePropertiesEntries extends Entries {
+class FilePropertiesEntries implements Entries {
 
     private final Closure<PropertiesProvider> providerClosure
 
@@ -31,8 +33,10 @@ class FilePropertiesEntries extends Entries {
     }
 
     @Override
-    protected Object getValueAt(String key) {
-        provider.getValueAt(key)
+    Entry getAt(String key) {
+        new Entry(key, {
+            provider.getValueAt(key)
+        })
     }
 
     @Override

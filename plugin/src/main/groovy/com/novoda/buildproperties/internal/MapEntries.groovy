@@ -1,8 +1,10 @@
 package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entries
+import com.novoda.buildproperties.Entry
+import com.novoda.buildproperties.ExceptionFactory
 
-class MapEntries extends Entries {
+class MapEntries implements Entries {
     private final Map<String, Object> map
     private final ExceptionFactory exceptionFactory
 
@@ -19,12 +21,14 @@ class MapEntries extends Entries {
     }
 
     @Override
-    protected Object getValueAt(String key) {
-        Object value = map.get(key)
-        if (value != null) {
-            return value
-        }
-        throw exceptionFactory.propertyNotFound(key)
+    Entry getAt(String key) {
+        new Entry(key, {
+            Object value = map.get(key)
+            if (value != null) {
+                return value
+            }
+            throw exceptionFactory.propertyNotFound(key)
+        })
     }
 
     @Override

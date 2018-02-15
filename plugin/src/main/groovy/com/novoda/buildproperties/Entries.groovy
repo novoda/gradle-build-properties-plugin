@@ -1,19 +1,10 @@
 package com.novoda.buildproperties
 
-abstract class Entries {
+interface Entries {
 
-    Entries() {
-    }
+    boolean contains(String key)
 
-    abstract boolean contains(String key)
+    Entry getAt(String key)
 
-    protected abstract Object getValueAt(String key)
-
-    Entry getAt(String key) {
-        new Entry(key, {
-            getValueAt(key)
-        })
-    }
-
-    abstract Enumeration<String> getKeys()
+    Enumeration<String> getKeys()
 }
