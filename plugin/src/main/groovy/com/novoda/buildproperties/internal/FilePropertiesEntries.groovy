@@ -2,6 +2,7 @@ package com.novoda.buildproperties.internal
 
 import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.Entry
+import com.novoda.buildproperties.ExceptionFactory
 
 class FilePropertiesEntries implements Entries {
 

@@ -1,7 +1,6 @@
 package com.novoda.buildproperties
 
 import com.novoda.buildproperties.internal.DefaultExceptionFactory
-import com.novoda.buildproperties.internal.ExceptionFactory
 import com.novoda.buildproperties.internal.FilePropertiesEntries
 import com.novoda.buildproperties.internal.MapEntries
 

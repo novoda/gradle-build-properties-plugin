@@ -1,4 +1,4 @@
-package com.novoda.buildproperties.internal
+package com.novoda.buildproperties
 
 interface ExceptionFactory {
 
