@@ -24,7 +24,7 @@ class BuildProperties {
     }
 
     void using(File file) {
-        entries(FilePropertiesEntries.create(name ?: file.name, file, exceptionFactory))
+        entries(FilePropertiesEntries.create(file, exceptionFactory))
     }
 
     void entries(Entries entries) {

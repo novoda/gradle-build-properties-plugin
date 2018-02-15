@@ -127,7 +127,7 @@ class AndroidProjectIntegrationTest {
             releaseBuildConfig = new File(buildDir, 'generated/source/buildConfig/release/com/novoda/buildpropertiesplugin/sample/BuildConfig.java')
             debugResValues = new File(buildDir, 'generated/res/resValues/debug/values/generated.xml')
             releaseResValues = new File(buildDir, 'generated/res/resValues/release/values/generated.xml')
-            secrets = FilePropertiesEntries.create('secrets',
+            secrets = FilePropertiesEntries.create(
                     new File(projectDir, 'properties/secrets.properties'),
                     new DefaultExceptionFactory('secrets')
             )

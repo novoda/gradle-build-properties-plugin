@@ -4,13 +4,11 @@ import com.novoda.buildproperties.Entries
 
 class FilePropertiesEntries extends Entries {
 
-    private final String name
     private final Closure<PropertiesProvider> providerClosure
 
-    static FilePropertiesEntries create(String name,
-                                        File file,
+    static FilePropertiesEntries create(File file,
                                         ExceptionFactory exceptionFactory) {
-        new FilePropertiesEntries(name, {
+        new FilePropertiesEntries({
             if (!file.exists()) {
                 throw exceptionFactory.fileNotFound(file)
             }
@@ -18,9 +16,8 @@ class FilePropertiesEntries extends Entries {
         })
     }
 
-    private FilePropertiesEntries(String name, Closure<PropertiesProvider> providerClosure) {
+    private FilePropertiesEntries(Closure<PropertiesProvider> providerClosure) {
         super()
-        this.name = name
         this.providerClosure = providerClosure.memoize()
     }
 
