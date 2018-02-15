@@ -20,20 +20,16 @@ class BuildProperties {
         name
     }
 
-    void using(Map<String, Object> map) {
-        entries(new MapEntries(map, exceptionFactory))
-    }
-
-    void using(File file) {
-        entries(FilePropertiesEntries.create(file, exceptionFactory))
-    }
-
-    void entries(Entries entries) {
-        this.entries = entries
+    Entries getEntries() {
+        entries
     }
 
     Enumeration<String> getKeys() {
         entries.keys
+    }
+
+    ExceptionFactory getExceptionFactory() {
+        exceptionFactory
     }
 
     Entry getAt(String key) {
@@ -42,5 +38,17 @@ class BuildProperties {
 
     void setDescription(String description) {
         exceptionFactory.additionalMessage = description
+    }
+
+    void using(Map<String, Object> map) {
+        using(new MapEntries(map, exceptionFactory))
+    }
+
+    void using(File file) {
+        using(FilePropertiesEntries.create(file, exceptionFactory))
+    }
+
+    void using(Entries entries) {
+        this.entries = entries
     }
 }
