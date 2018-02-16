@@ -46,7 +46,10 @@ class FilePropertiesEntries implements Entries {
 
     @Override
     Map<String, Entry> asMap() {
-        return null
+        Map<String, Entry> entryMap = keys.toList().collectEntries {
+            [(it): this[it]]
+        }
+        Collections.unmodifiableMap(entryMap)
     }
 
     private static class PropertiesProvider {

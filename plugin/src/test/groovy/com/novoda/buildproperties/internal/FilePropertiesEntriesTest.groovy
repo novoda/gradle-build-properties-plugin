@@ -1,7 +1,6 @@
 package com.novoda.buildproperties.internal
 
 import com.google.common.io.Resources
-import com.novoda.buildproperties.Entry
 import org.junit.Before
 import org.junit.Test
 
@@ -10,11 +9,12 @@ import static org.junit.Assert.fail
 
 class FilePropertiesEntriesTest {
 
-    private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
+    private static
+    final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
 
     private DefaultExceptionFactory exceptionFactory
     private AdditionalMessageProvider additionalMessageProvider
-    
+
     private FilePropertiesEntries entries
 
     @Before
@@ -27,7 +27,7 @@ class FilePropertiesEntriesTest {
     @Test
     void shouldNotAccessPropertyValueWhenGettingEntry() {
         try {
-            Entry entry = entries['notThere']
+            entries['notThere']
         } catch (IllegalArgumentException ignored) {
             fail('Entry value should be evaluated lazily')
         }
@@ -143,5 +143,29 @@ class FilePropertiesEntriesTest {
             assertThat(message).contains('notThere.properties does not exist.')
             assertThat(message).contains(consoleRenderer.indent(additionalMessage, "* buildProperties.foo: "))
         }
+    }
+
+    @Test
+    void shouldProvideEntriesAsMap() {
+        def map = entries.asMap()
+
+        assertThat(map).containsKey('aProperty')
+        assertThat(map['aProperty']).hasValue('qwerty')
+    }
+
+    @Test
+    void shouldIterateOverValues() {
+        def values = entries.asMap().values()*.string
+
+        assertThat(values).containsExactly(
+                'qwerty',
+                'asdfg',
+                '?????',
+                'false',
+                'true',
+                '123456',
+                '0.001',
+                'hello world'
+        )
     }
 }
