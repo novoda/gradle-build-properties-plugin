@@ -35,4 +35,12 @@ class MapEntries implements Entries {
     Enumeration<String> getKeys() {
         Collections.enumeration(map.keySet())
     }
+
+    @Override
+    Map<String, Entry> asMap() {
+        Map<String, Entry> entryMap = map.keySet().collectEntries {
+            [(it): this[it]]
+        }
+        Collections.unmodifiableMap(entryMap)
+    }
 }

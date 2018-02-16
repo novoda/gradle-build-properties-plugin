@@ -7,4 +7,6 @@ interface Entries {
     Entry getAt(String key)
 
     Enumeration<String> getKeys()
+
+    Map<String, Entry> asMap()
 }

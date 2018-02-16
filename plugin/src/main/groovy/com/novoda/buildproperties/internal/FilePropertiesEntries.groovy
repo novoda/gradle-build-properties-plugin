@@ -44,6 +44,10 @@ class FilePropertiesEntries implements Entries {
         provider.keys
     }
 
+    @Override
+    Map<String, Entry> asMap() {
+        return null
+    }
 
     private static class PropertiesProvider {
         final File file
