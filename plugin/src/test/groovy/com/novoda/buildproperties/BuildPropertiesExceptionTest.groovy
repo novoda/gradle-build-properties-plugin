@@ -43,4 +43,12 @@ class BuildPropertiesExceptionTest {
         assertThat(compositeException).hasMessage(EXCEPTION_1.message, EXCEPTION_2.message, EXCEPTION_3.message)
     }
 
+    @Test
+    void shouldNotContainDuplicateCompositeExceptionMessage() {
+        BuildPropertiesException innerException = BuildPropertiesException.from(EXCEPTION_1).add(EXCEPTION_2)
+
+        BuildPropertiesException compositeException = innerException.add(EXCEPTION_1)
+
+        assertThat(compositeException).hasMessage(EXCEPTION_1.message, EXCEPTION_2.message)
+    }
 }

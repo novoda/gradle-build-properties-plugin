@@ -28,6 +28,6 @@ final class BuildPropertiesExceptionSubject extends Subject<BuildPropertiesExcep
     }
 
     void hasMessage(String... messages) {
-        Truth.assertThat(subject.exceptions.collect { it.message }).containsExactly(messages)
+        Truth.assertThat(actual().exceptions.collect { it.message }).containsExactly(messages)
     }
 }

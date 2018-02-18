@@ -32,12 +32,21 @@ class BuildPropertiesException extends Exception {
         List<Throwable> newExceptions = new ArrayList<>(exceptions)
         List<String> newAdditionalMessages = new ArrayList<>(additionalMessages)
         if (throwable instanceof BuildPropertiesException) {
-            newExceptions.addAll(((BuildPropertiesException) throwable).exceptions)
-            newAdditionalMessages.addAll(((BuildPropertiesException) throwable).additionalMessages)
+            def other = (BuildPropertiesException) throwable
+            newExceptions.addAll(removeDuplicateExceptions(other.exceptions))
+            newAdditionalMessages.addAll(removeDuplicateAdditionalMessages(other.additionalMessages))
         } else {
-            newExceptions.add(throwable)
+            newExceptions.addAll(removeDuplicateExceptions([throwable]))
         }
         return new BuildPropertiesException(newExceptions, newAdditionalMessages)
+    }
+
+    private List<Throwable> removeDuplicateExceptions(List<Throwable> others) {
+        others.findAll { !message.contains(it.message) }
+    }
+
+    private List<String> removeDuplicateAdditionalMessages(List<String> messages) {
+        messages.findAll { !additionalMessages.contains(it) }
     }
 
     List<Throwable> getExceptions() {
