@@ -17,7 +17,7 @@ class DefaultEntriesFactory implements Entries.Factory {
     Entries from(def source) {
         if (source instanceof BuildProperties) {
             return source.entries
-        }else if (source instanceof Entries) {
+        } else if (source instanceof Entries) {
             return source as Entries
         } else if (source instanceof Map<String, Object>) {
             return new MapEntries(source, exceptionFactory)
@@ -26,5 +26,9 @@ class DefaultEntriesFactory implements Entries.Factory {
         } else {
             throw new GradleException("Unsupported type of source (${source.class})")
         }
+    }
+
+    void setAdditionalMessage(String value) {
+        exceptionFactory.additionalMessage = value
     }
 }
