@@ -6,7 +6,7 @@ import com.novoda.buildproperties.internal.DefaultExceptionFactory
 class BuildProperties {
 
     private final String name
-    private final Entries.Factory factory
+    private final DefaultEntriesFactory factory
     private EntriesChain chain
 
     BuildProperties(String name) {
