@@ -7,14 +7,12 @@ import org.gradle.api.Project
 class BuildProperties {
 
     private final String name
-    private final Project project
     private final DefaultEntriesFactory factory
     private EntriesChain chain
 
     BuildProperties(String name, Project project) {
         this.name = name
-        this.project = project
-        this.factory = new DefaultEntriesFactory(new DefaultExceptionFactory(name))
+        this.factory = new DefaultEntriesFactory(project.logger, new DefaultExceptionFactory(name))
     }
 
     String getName() {

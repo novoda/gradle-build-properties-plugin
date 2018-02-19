@@ -4,12 +4,15 @@ import com.novoda.buildproperties.BuildProperties
 import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.ExceptionFactory
 import org.gradle.api.GradleException
+import org.gradle.api.logging.Logger
 
 class DefaultEntriesFactory implements Entries.Factory {
 
+    private final Logger logger
     private final ExceptionFactory exceptionFactory
 
-    DefaultEntriesFactory(ExceptionFactory exceptionFactory) {
+    DefaultEntriesFactory(Logger logger, ExceptionFactory exceptionFactory) {
+        this.logger = logger
         this.exceptionFactory = exceptionFactory
     }
 
@@ -21,12 +24,16 @@ class DefaultEntriesFactory implements Entries.Factory {
             case Entries:
                 return source as Entries
             case { it instanceof Map<String, Object> }:
-                return new MapEntries(source, exceptionFactory)
+                return new MapEntries(source as Map<String, Object>, exceptionFactory)
             case File:
-                return FilePropertiesEntries.create(source, exceptionFactory)
+                return newFilePropertiesEntries(source as File)
             default:
                 throw new GradleException("Unsupported type of source (${source.class})")
         }
+    }
+
+    private FilePropertiesEntries newFilePropertiesEntries(File file) {
+        FilePropertiesEntries.create(file, exceptionFactory)
     }
 
     void setAdditionalMessage(String value) {
