@@ -3,7 +3,7 @@ package com.novoda.buildproperties.internal
 import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.Entry
 
-class LazyEntries implements Entries {
+class LazyEntries extends Entries {
 
     private final Closure<Entries> entriesClosure
 
@@ -11,7 +11,7 @@ class LazyEntries implements Entries {
         this.entriesClosure = entriesClosure.memoize()
     }
 
-    private Entries getEntries() {
+    protected Entries getEntries() {
         entriesClosure.call()
     }
 

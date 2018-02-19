@@ -4,9 +4,7 @@ import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.Entry
 import com.novoda.buildproperties.ExceptionFactory
 
-class FilePropertiesEntries extends Entries {
-
-    private final Closure<PropertiesProvider> providerClosure
+class FilePropertiesEntries extends LazyEntries {
 
     static FilePropertiesEntries create(File file,
                                         ExceptionFactory exceptionFactory) {
@@ -18,32 +16,11 @@ class FilePropertiesEntries extends Entries {
         })
     }
 
-    private FilePropertiesEntries(Closure<PropertiesProvider> providerClosure) {
-        this.providerClosure = providerClosure.memoize()
+    private FilePropertiesEntries(Closure<Entries> entriesClosure) {
+        super(entriesClosure)
     }
 
-    private PropertiesProvider getProvider() {
-        providerClosure.call()
-    }
-
-    @Override
-    boolean contains(String key) {
-        provider.contains(key)
-    }
-
-    @Override
-    Entry getAt(String key) {
-        new Entry(key, {
-            provider.getValueAt(key)
-        })
-    }
-
-    @Override
-    Enumeration<String> getKeys() {
-        provider.keys
-    }
-
-    private static class PropertiesProvider {
+    private static class PropertiesProvider extends Entries {
         final File file
         final Properties properties
         final PropertiesProvider defaults
@@ -76,21 +53,26 @@ class FilePropertiesEntries extends Entries {
             }
         }
 
+        @Override
         boolean contains(String key) {
             properties[key] != null || defaults?.contains(key)
         }
 
-        Object getValueAt(String key) {
-            Object value = properties[key]
-            if (value != null) {
-                return value
-            }
-            if (defaults?.contains(key)) {
-                return defaults.getValueAt(key)
-            }
-            throw exceptionFactory.propertyNotFound(key)
+        @Override
+        Entry getAt(String key) {
+            return new Entry(key, {
+                Object value = properties[key]
+                if (value != null) {
+                    return value
+                }
+                if (defaults?.contains(key)) {
+                    return defaults.getAt(key).getValue()
+                }
+                throw exceptionFactory.propertyNotFound(key)
+            })
         }
 
+        @Override
         Enumeration<String> getKeys() {
             Collections.enumeration(keys)
         }
