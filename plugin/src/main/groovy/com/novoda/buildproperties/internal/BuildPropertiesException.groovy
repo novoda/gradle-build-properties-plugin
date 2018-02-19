@@ -33,16 +33,16 @@ class BuildPropertiesException extends Exception {
         List<String> newAdditionalMessages = new ArrayList<>(additionalMessages)
         if (throwable instanceof BuildPropertiesException) {
             def other = (BuildPropertiesException) throwable
-            newExceptions.addAll(removeDuplicateExceptions(other.exceptions))
+            newExceptions.addAll(removeDuplicateExceptions(message, other.exceptions))
             newAdditionalMessages.addAll(removeDuplicateAdditionalMessages(other.additionalMessages))
         } else {
-            newExceptions.addAll(removeDuplicateExceptions([throwable]))
+            newExceptions.addAll(removeDuplicateExceptions(message, [throwable]))
         }
         return new BuildPropertiesException(newExceptions, newAdditionalMessages)
     }
 
-    private List<Throwable> removeDuplicateExceptions(List<Throwable> others) {
-        others.findAll { !message.contains(it.message) }
+    private static List<Throwable> removeDuplicateExceptions(String currentMessage, List<Throwable> throwables) {
+        throwables.findAll { !currentMessage.contains(it.message) }
     }
 
     private List<String> removeDuplicateAdditionalMessages(List<String> messages) {
