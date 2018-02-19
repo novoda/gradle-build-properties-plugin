@@ -34,6 +34,10 @@ class BuildProperties {
         chain.getAt(key)
     }
 
+    Map<String, Entry> asMap() {
+        entries.asMap()
+    }
+
     void setDescription(String description) {
         factory.additionalMessage = description
     }

@@ -1,12 +1,19 @@
 package com.novoda.buildproperties
 
-interface Entries {
+abstract class Entries {
 
-    boolean contains(String key)
+    abstract boolean contains(String key)
 
-    Entry getAt(String key)
+    abstract Entry getAt(String key)
 
-    Enumeration<String> getKeys()
+    abstract Enumeration<String> getKeys()
+
+    final Map<String, Entry> asMap() {
+        Map<String, Entry> entryMap = keys.toList().collectEntries {
+            [(it): this[it]]
+        }
+        Collections.unmodifiableMap(entryMap)
+    }
 
     interface Factory {
 

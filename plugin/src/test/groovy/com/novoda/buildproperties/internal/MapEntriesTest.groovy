@@ -48,6 +48,25 @@ class MapEntriesTest {
         assertThat(Collections.list(keys)).containsAllOf('foo', 'x')
     }
 
+    @Test
+    void shouldProvideEntriesAsMap() {
+        def entries = givenMapEntries([foo: 'bar', x: 'y'])
+
+        def map = entries.asMap()
+
+        assertThat(map).containsKey('foo')
+        assertThat(map['foo']).hasValue('bar')
+    }
+
+    @Test
+    void shouldIterateOverValues() {
+        def entries = givenMapEntries([foo: 'bar', x: 'y'])
+
+        def values = entries.asMap().values()*.string
+
+        assertThat(values).containsExactly('bar', 'y')
+    }
+
     private static MapEntries givenMapEntries(Map<String, Object> properties) {
         new MapEntries(properties, new DefaultExceptionFactory('foo'))
     }

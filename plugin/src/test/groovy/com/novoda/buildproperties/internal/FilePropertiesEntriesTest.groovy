@@ -1,7 +1,6 @@
 package com.novoda.buildproperties.internal
 
 import com.google.common.io.Resources
-import com.novoda.buildproperties.Entry
 import org.junit.Before
 import org.junit.Test
 
@@ -10,24 +9,24 @@ import static org.junit.Assert.fail
 
 class FilePropertiesEntriesTest {
 
-    private static final File PROPERTIES_FILE = new File(Resources.getResource('any.properties').toURI())
-
+    private static final File ANY_PROPERTIES = resourceFile('any.properties')
+    private static final File NOT_THERE_PROPERTIES = new File('notThere.properties')
     private DefaultExceptionFactory exceptionFactory
     private AdditionalMessageProvider additionalMessageProvider
-    
+
     private FilePropertiesEntries entries
 
     @Before
     void setUp() {
         additionalMessageProvider = new AdditionalMessageProvider()
         exceptionFactory = new DefaultExceptionFactory('foo')
-        entries = FilePropertiesEntries.create(PROPERTIES_FILE, exceptionFactory)
+        entries = FilePropertiesEntries.create(ANY_PROPERTIES, exceptionFactory)
     }
 
     @Test
     void shouldNotAccessPropertyValueWhenGettingEntry() {
         try {
-            Entry entry = entries['notThere']
+            entries['notThere']
         } catch (IllegalArgumentException ignored) {
             fail('Entry value should be evaluated lazily')
         }
@@ -105,8 +104,8 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create(new File(Resources.getResource('more.properties').toURI()), exceptionFactory)
-        def includingEntries = FilePropertiesEntries.create(new File(Resources.getResource('including.properties').toURI()), exceptionFactory)
+        def moreEntries = FilePropertiesEntries.create(resourceFile('more.properties'), exceptionFactory)
+        def includingEntries = FilePropertiesEntries.create(resourceFile('including.properties'), exceptionFactory)
 
         entries.keys.each { String key ->
             assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
@@ -118,7 +117,7 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldThrowExceptionWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        entries = FilePropertiesEntries.create(new File('notThere.properties'), exceptionFactory)
+        entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
 
         try {
             entries['any'].string
@@ -133,7 +132,7 @@ class FilePropertiesEntriesTest {
         def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
         def consoleRenderer = new ConsoleRenderer()
         exceptionFactory.additionalMessage = additionalMessage
-        entries = FilePropertiesEntries.create(new File('notThere.properties'), exceptionFactory)
+        entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
 
         try {
             entries['any'].string
@@ -143,5 +142,33 @@ class FilePropertiesEntriesTest {
             assertThat(message).contains('notThere.properties does not exist.')
             assertThat(message).contains(consoleRenderer.indent(additionalMessage, "* buildProperties.foo: "))
         }
+    }
+
+    @Test
+    void shouldProvideEntriesAsMap() {
+        def map = entries.asMap()
+
+        assertThat(map).containsKey('aProperty')
+        assertThat(map['aProperty']).hasValue('qwerty')
+    }
+
+    @Test
+    void shouldIterateOverValues() {
+        def values = entries.asMap().values()*.string
+
+        assertThat(values).containsExactly(
+                'qwerty',
+                'asdfg',
+                '?????',
+                'false',
+                'true',
+                '123456',
+                '0.001',
+                'hello world'
+        )
+    }
+
+    private static File resourceFile(String file) {
+        new File(Resources.getResource(file).toURI())
     }
 }
