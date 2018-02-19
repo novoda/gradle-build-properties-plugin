@@ -116,11 +116,9 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
-
+    void shouldThrowExceptionWhenCreatingEntriesFromNonExistentPropertiesFile() {
         try {
-            entries['any'].string
+            entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
             fail('Exception not thrown')
         } catch (Exception e) {
             assertThat(e.getMessage()).contains('notThere.properties does not exist.')
@@ -128,14 +126,13 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
+    void shouldProvideSpecifiedErrorMessageWhenCreatingEntriesFromNonExistentPropertiesFile() {
         def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
         def consoleRenderer = new ConsoleRenderer()
         exceptionFactory.additionalMessage = additionalMessage
-        entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
 
         try {
-            entries['any'].string
+            entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
             fail('Exception not thrown')
         } catch (Exception e) {
             String message = e.getMessage()

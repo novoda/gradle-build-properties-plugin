@@ -26,13 +26,13 @@ class DefaultEntriesFactory implements Entries.Factory {
             case { it instanceof Map<String, Object> }:
                 return new MapEntries(source as Map<String, Object>, exceptionFactory)
             case File:
-                return newFilePropertiesEntries(source as File)
+                return new LazyEntries({ newFilePropertiesEntries(source as File) })
             default:
                 throw new GradleException("Unsupported type of source (${source.class})")
         }
     }
 
-    private FilePropertiesEntries newFilePropertiesEntries(File file) {
+    private Entries newFilePropertiesEntries(File file) {
         FilePropertiesEntries.create(file, exceptionFactory)
     }
 

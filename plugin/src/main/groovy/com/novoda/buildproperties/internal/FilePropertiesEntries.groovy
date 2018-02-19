@@ -4,20 +4,32 @@ import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.Entry
 import com.novoda.buildproperties.ExceptionFactory
 
-class FilePropertiesEntries extends LazyEntries {
+class FilePropertiesEntries extends Entries {
+
+    private final Entries entries
 
     static FilePropertiesEntries create(File file,
                                         ExceptionFactory exceptionFactory) {
-        new FilePropertiesEntries({
-            if (!file.exists()) {
-                throw exceptionFactory.fileNotFound(file)
-            }
-            PropertiesProvider.create(file, exceptionFactory)
-        })
+        new FilePropertiesEntries(PropertiesProvider.create(file, exceptionFactory))
     }
 
-    private FilePropertiesEntries(Closure<Entries> entriesClosure) {
-        super(entriesClosure)
+    private FilePropertiesEntries(Entries entries) {
+        this.entries = entries
+    }
+
+    @Override
+    boolean contains(String key) {
+        entries.contains(key)
+    }
+
+    @Override
+    Entry getAt(String key) {
+        entries.getAt(key)
+    }
+
+    @Override
+    Enumeration<String> getKeys() {
+        entries.getKeys()
     }
 
     private static class PropertiesProvider extends Entries {
@@ -28,6 +40,10 @@ class FilePropertiesEntries extends LazyEntries {
         final Set<String> keys
 
         static PropertiesProvider create(File file, ExceptionFactory exceptionFactory) {
+            if (!file.exists()) {
+                throw exceptionFactory.fileNotFound(file)
+            }
+
             Properties properties = new Properties()
             properties.load(new FileInputStream(file))
 
