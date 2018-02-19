@@ -4,7 +4,7 @@ import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.Entry
 import com.novoda.buildproperties.ExceptionFactory
 
-class FilePropertiesEntries implements Entries {
+class FilePropertiesEntries extends Entries {
 
     private final Closure<PropertiesProvider> providerClosure
 
@@ -19,7 +19,6 @@ class FilePropertiesEntries implements Entries {
     }
 
     private FilePropertiesEntries(Closure<PropertiesProvider> providerClosure) {
-        super()
         this.providerClosure = providerClosure.memoize()
     }
 
@@ -42,14 +41,6 @@ class FilePropertiesEntries implements Entries {
     @Override
     Enumeration<String> getKeys() {
         provider.keys
-    }
-
-    @Override
-    Map<String, Entry> asMap() {
-        Map<String, Entry> entryMap = keys.toList().collectEntries {
-            [(it): this[it]]
-        }
-        Collections.unmodifiableMap(entryMap)
     }
 
     private static class PropertiesProvider {

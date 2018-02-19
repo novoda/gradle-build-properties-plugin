@@ -4,13 +4,12 @@ import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.Entry
 import com.novoda.buildproperties.ExceptionFactory
 
-class MapEntries implements Entries {
+class MapEntries extends Entries {
     private final Map<String, Object> map
     private final ExceptionFactory exceptionFactory
 
     MapEntries(Map<String, Object> map,
                ExceptionFactory exceptionFactory) {
-        super()
         this.exceptionFactory = exceptionFactory
         this.map = Collections.unmodifiableMap(map)
     }
@@ -34,13 +33,5 @@ class MapEntries implements Entries {
     @Override
     Enumeration<String> getKeys() {
         Collections.enumeration(map.keySet())
-    }
-
-    @Override
-    Map<String, Entry> asMap() {
-        Map<String, Entry> entryMap = map.keySet().collectEntries {
-            [(it): this[it]]
-        }
-        Collections.unmodifiableMap(entryMap)
     }
 }
