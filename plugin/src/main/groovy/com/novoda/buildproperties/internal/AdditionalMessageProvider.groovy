@@ -1,8 +1,6 @@
 package com.novoda.buildproperties.internal
 
-import javax.inject.Provider
-
-class AdditionalMessageProvider implements Provider<String> {
+class AdditionalMessageProvider {
     private String additionalMessage = ''
 
     void setAdditionalMessage(String value) {
@@ -14,11 +12,6 @@ class AdditionalMessageProvider implements Provider<String> {
     }
 
     String getAdditionalMessage() {
-        additionalMessage
-    }
-
-    @Override
-    String get() {
         additionalMessage
     }
 }

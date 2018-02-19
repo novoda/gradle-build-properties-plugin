@@ -7,4 +7,9 @@ interface Entries {
     Entry getAt(String key)
 
     Enumeration<String> getKeys()
+
+    interface Factory {
+
+        Entries from(def source)
+    }
 }

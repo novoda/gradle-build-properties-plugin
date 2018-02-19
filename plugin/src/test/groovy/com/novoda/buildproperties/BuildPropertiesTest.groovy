@@ -139,6 +139,30 @@ class BuildPropertiesTest {
         assertThat(project.buildProperties.test['f']).hasValue('value_f')
     }
 
+    @Test
+    void shouldReturnFallbackValuesWhenChainOfEntries() {
+        File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
+
+        project.buildProperties {
+            map {
+                using([a: 'value_a', b: 'value_b', c: 'value_c'])
+            }
+            test {
+                using propertiesFile
+            }
+            chain {
+                using(propertiesFile).or(map)
+            }
+        }
+
+        assertThat(project.buildProperties.chain['a']).hasValue('value_a')
+        assertThat(project.buildProperties.chain['b']).hasValue('value_b')
+        assertThat(project.buildProperties.chain['c']).hasValue('value_c')
+        assertThat(project.buildProperties.chain['d']).hasValue('value_d')
+        assertThat(project.buildProperties.chain['e']).hasValue('value_e')
+        assertThat(project.buildProperties.chain['f']).hasValue('value_f')
+    }
+
     private File newPropertiesFile(String fileName, String fileContent) {
         File propertiesFile = temp.newFile(fileName)
         propertiesFile.text = fileContent
