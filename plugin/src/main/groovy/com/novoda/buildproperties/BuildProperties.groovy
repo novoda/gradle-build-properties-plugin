@@ -35,6 +35,10 @@ class BuildProperties {
         entries.getAt(key)
     }
 
+    Map<String, Entry> asMap() {
+        entries.asMap()
+    }
+
     void setDescription(String description) {
         exceptionFactory.additionalMessage = description
     }
