@@ -34,7 +34,7 @@ class BuildPropertiesException extends Exception {
         if (throwable instanceof BuildPropertiesException) {
             def other = (BuildPropertiesException) throwable
             newExceptions.addAll(removeDuplicateExceptions(message, other.exceptions))
-            newAdditionalMessages.addAll(removeDuplicateAdditionalMessages(other.additionalMessages))
+            newAdditionalMessages.addAll(other.additionalMessages - additionalMessages)
         } else {
             newExceptions.addAll(removeDuplicateExceptions(message, [throwable]))
         }
@@ -43,10 +43,6 @@ class BuildPropertiesException extends Exception {
 
     private static List<Throwable> removeDuplicateExceptions(String currentMessage, List<Throwable> throwables) {
         throwables.findAll { !currentMessage.contains(it.message) }
-    }
-
-    private List<String> removeDuplicateAdditionalMessages(List<String> messages) {
-        messages.findAll { !additionalMessages.contains(it) }
     }
 
     List<Throwable> getExceptions() {
