@@ -36,7 +36,7 @@ class Entry {
         getValue() as String
     }
 
-    private Object getValue() {
+    Object getValue() {
         value.call()
     }
 
