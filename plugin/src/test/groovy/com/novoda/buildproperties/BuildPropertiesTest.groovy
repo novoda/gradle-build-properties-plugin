@@ -150,8 +150,11 @@ class BuildPropertiesTest {
             test {
                 using propertiesFile
             }
+            notThere {
+                using(new File(temp.root, 'notThere.properties'))
+            }
             chain {
-                using(propertiesFile).or(map)
+                using(notThere).or(propertiesFile).or(map)
             }
         }
 
