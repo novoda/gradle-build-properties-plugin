@@ -65,7 +65,7 @@ class FilePropertiesEntries extends Entries {
             this.exceptionFactory = exceptionFactory
             this.keys = new HashSet<>(properties.stringPropertyNames())
             if (defaults != null) {
-                this.keys.addAll(defaults.keys)
+                this.keys.addAll(defaults.keys.toSet())
             }
         }
 

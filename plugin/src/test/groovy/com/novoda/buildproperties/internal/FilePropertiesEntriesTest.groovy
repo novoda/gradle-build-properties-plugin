@@ -11,6 +11,9 @@ class FilePropertiesEntriesTest {
 
     private static final File ANY_PROPERTIES = resourceFile('any.properties')
     private static final File NOT_THERE_PROPERTIES = new File('notThere.properties')
+    private static final File MORE_PROPERTIES = resourceFile('more.properties')
+    private static final File INCLUDING_PROPERTIES = resourceFile('including.properties')
+
     private DefaultExceptionFactory exceptionFactory
     private AdditionalMessageProvider additionalMessageProvider
 
@@ -104,8 +107,8 @@ class FilePropertiesEntriesTest {
 
     @Test
     void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create(resourceFile('more.properties'), exceptionFactory)
-        def includingEntries = FilePropertiesEntries.create(resourceFile('including.properties'), exceptionFactory)
+        def moreEntries = FilePropertiesEntries.create(MORE_PROPERTIES, exceptionFactory)
+        def includingEntries = FilePropertiesEntries.create(INCLUDING_PROPERTIES, exceptionFactory)
 
         entries.keys.each { String key ->
             assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
@@ -163,6 +166,13 @@ class FilePropertiesEntriesTest {
                 '0.001',
                 'hello world'
         )
+    }
+
+    @Test
+    void shouldIterateOverAllKeysFromIncludedFiles() {
+        def entries = FilePropertiesEntries.create(MORE_PROPERTIES, exceptionFactory)
+
+        assertThat(Collections.list(entries.keys)).containsExactly('aProperty', 'include', 'a', 'api.key', 'negative', 'string', 'double', 'foo', 'another_PROPERTY', 'positive', 'int')
     }
 
     private static File resourceFile(String file) {
