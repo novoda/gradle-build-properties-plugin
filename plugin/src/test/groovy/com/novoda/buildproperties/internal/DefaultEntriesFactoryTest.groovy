@@ -19,9 +19,8 @@ import static org.mockito.Mockito.verify
 @RunWith(MockitoJUnitRunner)
 class DefaultEntriesFactoryTest {
 
-
     private static final File MORE_PROPERTIES = resourceFile('more.properties')
-    public static final File NOT_THERE_PROPERTIES = new File('notThere.properties')
+    private static final File NOT_THERE_PROPERTIES = new File('notThere.properties')
 
     @Mock private Logger logger
     private ExceptionFactory exceptionFactory
