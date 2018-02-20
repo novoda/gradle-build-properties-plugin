@@ -7,11 +7,16 @@ import com.novoda.buildproperties.ExceptionFactory
 import org.gradle.api.logging.Logger
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
 import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 
 import static com.novoda.buildproperties.test.ExtendedTruth.assertThat
 import static org.junit.Assert.fail
+import static org.mockito.Mockito.verify
 
+@RunWith(MockitoJUnitRunner)
 class DefaultEntriesFactoryTest {
 
 
@@ -87,6 +92,20 @@ class DefaultEntriesFactoryTest {
         def allKeys = entries.keys.toSet()
 
         assertThat(allKeys).containsExactly('aProperty', 'include', 'a', 'api.key', 'negative', 'string', 'double', 'foo', 'another_PROPERTY', 'positive', 'int')
+    }
+
+    @Test
+    void shouldLogWarningMessageWhenIncludeProvidedInPropertiesFile() {
+        Entries entries = entriesFactory.from(MORE_PROPERTIES)
+        entries['a'].value
+
+        assertThat(warningLog).contains('This feature is deprecated and will be removed in an upcoming release, please use or() operator instead.')
+    }
+
+    private String getWarningLog() {
+        ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String)
+        verify(logger).warn(logCaptor.capture())
+        logCaptor.value
     }
 
     private static File resourceFile(String file) {

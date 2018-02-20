@@ -2,7 +2,7 @@ package com.novoda.buildproperties
 
 class EntriesChain extends Entries {
 
-    private final Factory entriesFactory
+    private final Entries.Factory entriesFactory
     private final List<Entries> chain = []
 
     EntriesChain(Entries.Factory entriesFactory, def source) {

@@ -6,91 +6,42 @@ import com.novoda.buildproperties.ExceptionFactory
 
 class FilePropertiesEntries extends Entries {
 
-    private final Entries entries
+    private final Properties entries
+    private final ExceptionFactory exceptionFactory
 
     static FilePropertiesEntries create(File file,
                                         ExceptionFactory exceptionFactory) {
-        new FilePropertiesEntries(PropertiesProvider.create(file, exceptionFactory))
+        if (!file.exists()) {
+            throw exceptionFactory.fileNotFound(file)
+        }
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(file))
+        new FilePropertiesEntries(properties, exceptionFactory)
     }
 
-    private FilePropertiesEntries(Entries entries) {
+    private FilePropertiesEntries(Properties entries, ExceptionFactory exceptionFactory) {
         this.entries = entries
+        this.exceptionFactory = exceptionFactory
     }
 
     @Override
     boolean contains(String key) {
-        entries.contains(key)
+        entries[key] != null
     }
 
     @Override
     Entry getAt(String key) {
-        entries.getAt(key)
+        return new Entry(key, {
+            Object value = entries[key]
+            if (value != null) {
+                return value
+            }
+            throw exceptionFactory.propertyNotFound(key)
+        })
     }
 
     @Override
     Enumeration<String> getKeys() {
-        entries.getKeys()
-    }
-
-    private static class PropertiesProvider extends Entries {
-        final File file
-        final Properties properties
-        final PropertiesProvider defaults
-        final ExceptionFactory exceptionFactory
-        final Set<String> keys
-
-        static PropertiesProvider create(File file, ExceptionFactory exceptionFactory) {
-            if (!file.exists()) {
-                throw exceptionFactory.fileNotFound(file)
-            }
-
-            Properties properties = new Properties()
-            properties.load(new FileInputStream(file))
-
-            PropertiesProvider defaults = null
-            String include = properties['include']
-            if (include != null) {
-                defaults = create(new File(file.parentFile, include), exceptionFactory)
-            }
-            new PropertiesProvider(file, properties, defaults, exceptionFactory)
-        }
-
-        private PropertiesProvider(File file,
-                                   Properties properties,
-                                   PropertiesProvider defaults,
-                                   ExceptionFactory exceptionFactory) {
-            this.file = file
-            this.properties = properties
-            this.defaults = defaults
-            this.exceptionFactory = exceptionFactory
-            this.keys = new HashSet<>(properties.stringPropertyNames())
-            if (defaults != null) {
-                this.keys.addAll(defaults.keys.toSet())
-            }
-        }
-
-        @Override
-        boolean contains(String key) {
-            properties[key] != null || defaults?.contains(key)
-        }
-
-        @Override
-        Entry getAt(String key) {
-            return new Entry(key, {
-                Object value = properties[key]
-                if (value != null) {
-                    return value
-                }
-                if (defaults?.contains(key)) {
-                    return defaults.getAt(key).getValue()
-                }
-                throw exceptionFactory.propertyNotFound(key)
-            })
-        }
-
-        @Override
-        Enumeration<String> getKeys() {
-            Collections.enumeration(keys)
-        }
+        Collections.enumeration(entries.stringPropertyNames())
     }
 }
