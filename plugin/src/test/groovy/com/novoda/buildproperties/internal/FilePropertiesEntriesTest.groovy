@@ -11,6 +11,7 @@ class FilePropertiesEntriesTest {
 
     private static final File ANY_PROPERTIES = resourceFile('any.properties')
     private static final File NOT_THERE_PROPERTIES = new File('notThere.properties')
+
     private DefaultExceptionFactory exceptionFactory
     private AdditionalMessageProvider additionalMessageProvider
 
@@ -103,24 +104,9 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldRecursivelyIncludePropertiesFromSpecifiedFilesWhenIncludeProvided() {
-        def moreEntries = FilePropertiesEntries.create(resourceFile('more.properties'), exceptionFactory)
-        def includingEntries = FilePropertiesEntries.create(resourceFile('including.properties'), exceptionFactory)
-
-        entries.keys.each { String key ->
-            assertThat(moreEntries[key].string).isEqualTo(entries[key].string)
-        }
-        assertThat(moreEntries['foo'].string).isEqualTo(includingEntries['foo'].string)
-        assertThat(moreEntries['a'].string).isEqualTo('android')
-        assertThat(includingEntries['a'].string).isEqualTo('apple')
-    }
-
-    @Test
-    void shouldThrowExceptionWhenAccessingPropertyFromNonExistentPropertiesFile() {
-        entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
-
+    void shouldThrowExceptionWhenCreatingEntriesFromNonExistentPropertiesFile() {
         try {
-            entries['any'].string
+            entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
             fail('Exception not thrown')
         } catch (Exception e) {
             assertThat(e.getMessage()).contains('notThere.properties does not exist.')
@@ -128,14 +114,13 @@ class FilePropertiesEntriesTest {
     }
 
     @Test
-    void shouldProvideSpecifiedErrorMessageWhenAccessingPropertyFromNonExistentPropertiesFile() {
+    void shouldProvideSpecifiedErrorMessageWhenCreatingEntriesFromNonExistentPropertiesFile() {
         def additionalMessage = 'This file should contain the following properties:\n- foo\n- bar'
         def consoleRenderer = new ConsoleRenderer()
         exceptionFactory.additionalMessage = additionalMessage
-        entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
 
         try {
-            entries['any'].string
+            entries = FilePropertiesEntries.create(NOT_THERE_PROPERTIES, exceptionFactory)
             fail('Exception not thrown')
         } catch (Exception e) {
             String message = e.getMessage()

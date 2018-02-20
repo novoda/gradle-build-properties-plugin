@@ -14,4 +14,9 @@ abstract class Entries {
         }
         Collections.unmodifiableMap(entryMap)
     }
+
+    interface Factory {
+
+        Entries from(def source)
+    }
 }

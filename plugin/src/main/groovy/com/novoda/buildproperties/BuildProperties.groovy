@@ -1,18 +1,18 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.DefaultEntriesFactory
 import com.novoda.buildproperties.internal.DefaultExceptionFactory
-import com.novoda.buildproperties.internal.FilePropertiesEntries
-import com.novoda.buildproperties.internal.MapEntries
+import org.gradle.api.Project
 
 class BuildProperties {
 
     private final String name
-    private final ExceptionFactory exceptionFactory
-    private Entries entries
+    private final DefaultEntriesFactory factory
+    private EntriesChain chain
 
-    BuildProperties(String name) {
+    BuildProperties(String name, Project project) {
         this.name = name
-        this.exceptionFactory = new DefaultExceptionFactory(name)
+        this.factory = new DefaultEntriesFactory(project.logger, new DefaultExceptionFactory(name))
     }
 
     String getName() {
@@ -20,11 +20,11 @@ class BuildProperties {
     }
 
     Entries getEntries() {
-        entries
+        chain
     }
 
     Enumeration<String> getKeys() {
-        entries.keys
+        chain.keys
     }
 
     ExceptionFactory getExceptionFactory() {
@@ -32,7 +32,7 @@ class BuildProperties {
     }
 
     Entry getAt(String key) {
-        entries.getAt(key)
+        chain.getAt(key)
     }
 
     Map<String, Entry> asMap() {
@@ -40,18 +40,27 @@ class BuildProperties {
     }
 
     void setDescription(String description) {
-        exceptionFactory.additionalMessage = description
+        factory.additionalMessage = description
     }
 
-    void using(Map<String, Object> map) {
-        using(new MapEntries(map, exceptionFactory))
+    EntriesChain using(Map<String, Object> map) {
+        newChain(map)
     }
 
-    void using(File file) {
-        using(FilePropertiesEntries.create(file, exceptionFactory))
+    EntriesChain using(File file) {
+        newChain(file)
     }
 
-    void using(Entries entries) {
-        this.entries = entries
+    EntriesChain using(Entries entries) {
+        newChain(entries)
+    }
+
+    EntriesChain using(BuildProperties buildProperties) {
+        newChain(buildProperties.entries)
+    }
+
+    private EntriesChain newChain(def source) {
+        chain = new EntriesChain(factory, source)
+        return chain
     }
 }

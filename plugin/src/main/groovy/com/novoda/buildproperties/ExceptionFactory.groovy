@@ -1,8 +1,10 @@
 package com.novoda.buildproperties
 
-interface ExceptionFactory {
+import com.novoda.buildproperties.internal.AdditionalMessageProvider
 
-    Exception fileNotFound(File file)
+abstract class ExceptionFactory extends AdditionalMessageProvider {
 
-    Exception propertyNotFound(String key)
+    abstract Exception fileNotFound(File file)
+
+    abstract Exception propertyNotFound(String key)
 }
