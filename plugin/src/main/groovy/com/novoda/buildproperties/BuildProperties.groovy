@@ -2,16 +2,17 @@ package com.novoda.buildproperties
 
 import com.novoda.buildproperties.internal.DefaultEntriesFactory
 import com.novoda.buildproperties.internal.DefaultExceptionFactory
+import org.gradle.api.Project
 
 class BuildProperties {
 
     private final String name
-    private final Entries.Factory factory
+    private final DefaultEntriesFactory factory
     private EntriesChain chain
 
-    BuildProperties(String name) {
+    BuildProperties(String name, Project project) {
         this.name = name
-        this.factory = new DefaultEntriesFactory(new DefaultExceptionFactory(name))
+        this.factory = new DefaultEntriesFactory(project.logger, new DefaultExceptionFactory(name))
     }
 
     String getName() {
@@ -52,6 +53,10 @@ class BuildProperties {
 
     EntriesChain using(Entries entries) {
         newChain(entries)
+    }
+
+    EntriesChain using(BuildProperties buildProperties) {
+        newChain(buildProperties.entries)
     }
 
     private EntriesChain newChain(def source) {
