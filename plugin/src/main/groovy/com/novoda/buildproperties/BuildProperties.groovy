@@ -35,8 +35,8 @@ class BuildProperties {
         chain.getAt(key)
     }
 
-    Map<String, Entry> asMap() {
-        entries.asMap()
+    boolean contains(String key) {
+        chain.contains(key)
     }
 
     void setDescription(String description) {
