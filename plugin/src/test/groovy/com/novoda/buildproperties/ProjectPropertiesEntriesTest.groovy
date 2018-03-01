@@ -29,7 +29,7 @@ class ProjectPropertiesEntriesTest {
         entries = ProjectPropertiesEntries.from(project, new DefaultExceptionFactory('foo'))
     }
 
-    @Test()
+    @Test
     public void shouldThrowExceptionWhenPropertyIsNotSet() {
         try {
             entries['notThere'].string
