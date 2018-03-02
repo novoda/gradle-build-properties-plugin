@@ -5,6 +5,7 @@ import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.Entry
 import com.novoda.buildproperties.ExceptionFactory
 import org.gradle.api.logging.Logger
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -99,6 +100,15 @@ class DefaultEntriesFactoryTest {
         entries['a'].value
 
         assertThat(warningLog).contains('This feature is deprecated and will be removed in an upcoming release, please use or() operator instead.')
+    }
+
+    @Test
+    public void shouldResolveKeysFromProjectPropertiesEntries() {
+        def project = ProjectBuilder.builder().build()
+
+        Entries entries = entriesFactory.from(project)
+
+        assertThat(entries).isInstanceOf(ProjectPropertiesEntries.class)
     }
 
     private String getWarningLog() {

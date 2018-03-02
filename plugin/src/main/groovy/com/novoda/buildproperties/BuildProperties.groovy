@@ -63,6 +63,10 @@ class BuildProperties {
         newChain(buildProperties.entries)
     }
 
+    EntriesChain using(Project project) {
+        newChain(project)
+    }
+
     private EntriesChain newChain(def source) {
         chain = new EntriesChain(factory, source)
         return chain
