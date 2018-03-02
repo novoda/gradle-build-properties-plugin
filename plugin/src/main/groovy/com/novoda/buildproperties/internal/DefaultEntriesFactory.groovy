@@ -5,6 +5,7 @@ import com.novoda.buildproperties.Entries
 import com.novoda.buildproperties.EntriesChain
 import com.novoda.buildproperties.ExceptionFactory
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
 class DefaultEntriesFactory implements Entries.Factory {
@@ -28,6 +29,8 @@ class DefaultEntriesFactory implements Entries.Factory {
                 return new MapEntries(source as Map<String, Object>, exceptionFactory)
             case File:
                 return new LazyEntries({ newFilePropertiesEntries(source as File) })
+            case Project:
+                return ProjectPropertiesEntries.from(source as Project, exceptionFactory)
             default:
                 throw new GradleException("Unsupported type of source (${source.class})")
         }
