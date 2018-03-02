@@ -10,7 +10,7 @@ properties in your build scripts, for security reasons and in order to increase 
 common practice to provide these properties from external sources. 
 
 This plugin aims to provide a simple way to:
-- consume properties from external and internal sources like cli, system properties, files etc.
+- consume properties from external and internal sources like project properties, system properties, files etc.
 - define a custom source for properties
 - configure Android build with external properties 
 
