@@ -1,11 +1,10 @@
 # Advanced configuration
 
 The plugin supports a number of advanced behaviours. For example, it can be used to consume properties 
-from various external sources, fallbacks can be configured in case a given source doesn't have a certain property and 
-properties can be used in Android builds as `buildConfigField` and `resValue`.   
+from various external sources, it provides fallbacks for dynamic properties and can be 
+used in Android projects to map build properties to `buildConfigField` and `resValue`.   
 
-For most features the sample project, which can be found on the [github repo](https://github.com/novoda/gradle-build-properties-plugin/tree/master/sample),
-provides fully working examples.  
+For most features examples can be also found on our [github repo](https://github.com/novoda/gradle-build-properties-plugin/tree/master/sample).  
 
 ## Table of contents
  * [Read properties from different sources](#reading-properties-from-different-sources) 
@@ -16,7 +15,7 @@ provides fully working examples.
  
 ## Reading properties from different sources
 
-The plugin comes with built in support for various sources for properties, that can be configured within the 
+The plugin comes with built in support for various sources for properties that can be configured within the 
 `buildProperties` closure.
 
 ### Files
@@ -43,9 +42,13 @@ cli {
 }
 ```
 
-Project properties can be either either passed via the command line or the build script itself:
+Project properties can be either either passed via the command line:
 
-`gradlew build -Papi_key=12345`
+```gradle
+gradlew build -Papi_key=12345
+```
+
+or via the build script itself:
 
 ```gradle
 ext {
@@ -65,8 +68,8 @@ env {
 
 ## Define custom property source
 
-Besides the built in sources for properties, the plugin also provides an API to create custom sources.
-Custom sources need to extend the `Entries` and can be provided via `BuildProperties.entries(Entries entries)`. For example, 
+Besides the built-in sources for properties, the plugin also provides an API to create custom ones.
+These need to extend the `Entries` and can be provided via `BuildProperties.entries(Entries entries)`. For example, 
 a custom implementation could consume properties from a web resource.
 
 ```gradle
@@ -77,7 +80,7 @@ api {
  
 
 ## Fallback support
-If a property cannot be found an exception is thrown, it's possible to provide a fallback.
+If a property cannot be found it's possible to provide a fallback.
 
 ### Fallback Entry
 
@@ -112,8 +115,7 @@ files {
 
 ## Map properties to Android Gradle plugin
 
-Using the plugin, properties can be mapped as `buildConfigField` and `resValue` to the Gradle Android plugin.
-Besides that it enhances these facilities by enforcing types.
+Using the plugin, properties can be mapped as `buildConfigField` and `resValue` to the Android Gradle plugin.
 
 ```gradle
 buildProperties {
@@ -130,6 +132,8 @@ android {
         buildConfigString 'CLIENT_SECRET', buildProperties.api['api_client_secret']
         ...
 ```
+
+Besides that it enhances these facilities by enforcing types. 
 
 To generate a string field in your BuildConfig you used to write:
 
@@ -159,7 +163,7 @@ The full list of new typed facilities is as follows:
 
 ## Define Android product flavors using properties
 
-Using the plugin properties can be also injected into other gradle plugin extensions. 
+Using the plugin, properties can be also injected into other gradle plugin extensions. 
 
 For example, Android `productFlavors` can be easily configured by first creating a method that configures a product flavor from 
 given properties:
@@ -179,7 +183,7 @@ productFlavors.all { flavor ->
 }
 ```
 
-And then using it to configure the `productFlavors`: 
+and then by calling it: 
 
 ```gradle
 
