@@ -120,7 +120,7 @@ Using the plugin, properties can be mapped as `buildConfigField` and `resValue` 
 ```gradle
 buildProperties {
     api {
-            file project.file('../properties/api_secrets.properties')
+            using project.file('../properties/api_secrets.properties')
     }
 }
 
