@@ -45,22 +45,17 @@ buildProperties {
     }
 }
 ```
-where `secrets.properties` is a properties file that can now be referenced
-in the build script as `buildProperties.secrets`. Entries in such file can be
-accessed via the `getAt` operator:
+where `secrets.properties` is a properties file, containing key/value pairs, that can now be referenced
+in the build script as `buildProperties.secrets`:
 ```gradle
-Entry entry = buildProperties.secrets['aProperty']
+boolean enabled = buildProperties.secrets['a'].boolean
+int count = buildProperties.secrets['b'].int
+double rate = buildProperties.secrets['c'].double
+String label = buildProperties.secrets['d'].string
 ```
 
-The value of an `Entry` can be retrieved via one of its typed accessors:
-
-- `boolean enabled = buildProperties.secrets['x'].boolean`
-- `int count = buildProperties.secrets['x'].int`
-- `double rate = buildProperties.secrets['x'].double`
-- `String label = buildProperties.secrets['x'].string`
-
-It is important to note that values are lazy loaded too (via the internal closure provided in `Entry`).
-Trying to access the value of a specific property could generate an exception if the key is missing in the provided properties file, eg:
+It is important to note that values are lazy loaded too. Trying to access the value of a specific property 
+could generate an exception if the key is missing in the provided properties file, eg:
 ```
 FAILURE: Build failed with an exception.
 
