@@ -4,7 +4,7 @@ The plugin supports a number of advanced behaviours. For example, it can be used
 from various external sources, it provides fallbacks for dynamic properties and can be 
 used in Android projects to map build properties to `buildConfigField` and `resValue`.   
 
-For most features examples can be also found on our [github repo](https://github.com/novoda/gradle-build-properties-plugin/tree/master/sample).  
+Examples for most features can also be found on our [github repo](https://github.com/novoda/gradle-build-properties-plugin/tree/master/sample).  
 
 ## Table of contents
  * [Read properties from different sources](#reading-properties-from-different-sources) 
@@ -93,7 +93,7 @@ A fallback value for a given `Entry` via the `or()` operator can be defined as:
 |a value | `buildProperties.secrets['notThere'].or('fallback')` |
 
 If the whole fallback chain evaluation fails then a `CompositeException` is thrown listing all
-the causes in the chain, eg:
+the causes in the chain, e.g.:
 
 ```
 A problem occurred while evaluating entry:

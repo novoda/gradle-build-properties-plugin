@@ -54,7 +54,7 @@ String label = buildProperties.secrets['d'].string
 ```
 
 It is important to note that values are lazy loaded too. Trying to access the value of a specific property 
-could generate an exception if the key is missing in the provided properties file, eg:
+could generate an exception if the key is missing in the provided properties file, e.g.:
 ```
 FAILURE: Build failed with an exception.
 
