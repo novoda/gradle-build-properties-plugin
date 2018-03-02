@@ -8,23 +8,80 @@ For most features the sample project, which can be found on the [github repo](ht
 provides fully working examples.  
 
 ## Table of contents
- * [Reading properties from different sources](#reading-properties-from-different-sources) 
- * Custom property source
- * Fallback/Chaining mechanism
- * Android build configuration variables
- * Android resource variables
- * Android property backed flavors
- 
+ * [Read properties from different sources](#reading-properties-from-different-sources) 
+ * [Define custom property source](#define-custom-property-source)
+ * [Fallback support](#fallback-support)
+ * [Map properties to Android Gradle plugin](#map-properties-to-android-gradle-plugin)
+ * [Define Android product flavors using properties](#define-android-product-flavors-using-properties)
  
 ## Reading properties from different sources
 
-The plugin comes with built in support for various sources for properties. 
+The plugin comes with built in support for various sources for properties, that can be configured within the 
+`buildProperties` closure.
 
-## Features
+### Files
 
-#### Fallback support
-If a property cannot be found an exception is thrown, it's possible to provide a fallback
-value for a given `Entry` via the `or()` operator, defined as:
+Properties can be consumed from one or multiple files:
+
+```gradle
+dev {
+    using rootProject.file('dev.properties')
+}
+
+production {
+    using rootProject.file('production.properties')
+}
+``` 
+
+### Project properties
+
+Properties can be consumed from the project properties: 
+
+```gradle
+cli {
+    using project
+}
+```
+
+Project properties can be either either passed via the command line or the build script itself:
+
+`gradlew build -Papi_key=12345`
+
+```gradle
+ext {
+    api_key=12345
+}
+```
+
+### System properties
+
+Properties can be consumed from the system properties:
+
+```gradle
+env {
+    using System.getenv()
+}
+```
+
+## Define custom property source
+
+Besides the built in sources for properties, the plugin also provides an API to create custom sources.
+Custom sources need to extend the `Entries` and can be provided via `BuildProperties.entries(Entries entries)`. For example, 
+a custom implementation could consume properties from a web resource.
+
+```gradle
+api {
+    using customApiEntries()
+}
+```
+ 
+
+## Fallback support
+If a property cannot be found an exception is thrown, it's possible to provide a fallback.
+
+### Fallback Entry
+
+A fallback value for a given `Entry` via the `or()` operator can be defined as:
 
 | | Example |
 |----|----|
@@ -43,106 +100,49 @@ A problem occurred while evaluating entry:
 
 ```
 
-#### Properties inheritance
-It might be useful to have properties files that can recursively include
-other properties files (specified via an `include` property).
-Inherited properties can be overridden by the including set, just redefine
-the property in the file and its value will be used instead of the one
-from the included set.
+### Fallback Entries
 
-For example, given a generic properties file `config.properties`:
+Besides providing a fallback `Entry`, also another `Entries` source can be declared as fallback: 
 
-```properties
-foo=bar
-aKey=aValue
+```gradle
+files {
+    using(file('$file.name')).or(file('$includeFile.name'))
+}    
 ```
 
-you can override values and add additional ones in another properties file `debug.properties`:
+## Map properties to Android Gradle plugin
 
-```properties
-include=/path/to/config.properties
-aNewKey=aNewValue
-aKey=overriddenPreviousValue
-```
-
-Then in your `build.gradle`:
+Using the plugin, properties can be mapped as `buildConfigField` and `resValue` to the Gradle Android plugin.
+Besides that it enhances these facilities by enforcing types.
 
 ```gradle
 buildProperties {
-    secrets {
-        file rootProject.file('debug.properties')
+    api {
+            file project.file('../properties/api_secrets.properties')
     }
 }
-
-...
 
 android {
     ...
 
     defaultConfig {
+        buildConfigString 'CLIENT_ID', buildProperties.api['api_client_id']
+        buildConfigString 'CLIENT_SECRET', buildProperties.api['api_client_secret']
         ...
-        buildConfigString 'FOO', buildProperties.secrets['foo'] // bar
-        buildConfigString 'A_KEY', buildProperties.secrets['aKey'] // overriddenPreviousValue
-        buildConfigString 'A_NEW_KEY', buildProperties.secrets['aNewKey'] // aNewValue
-        ...
-    }
-}
 ```
 
-#### More on loading properties
-If the specified file is not found an exception is thrown at build time as soon as one of its properties is evaluated.
-You can specify a custom error message to provide the user with more information, eg:
-```gradle
-buildProperties {
-    secrets {
-        file rootProject.file('secrets.properties'), '''
-           This file should contain the following properties:
-           - fabricApiKey: API key for Fabric
-           - googleMapsApiKey: API key for Google Maps
-        '''
-    }
-}
-```
+To generate a string field in your BuildConfig you used to write:
 
-
-## Android-specific features
-
-When applying the `gradle-build-properties-plugin` to an Android project you get access to an
- additional set of powerful features.
-
-#### 1. Store a property value into your `BuildConfig`
-In any product flavor configuration (or `defaultConfig`) you can use
-`buildConfigString` as follows:
-```gradle
-    defaultConfig {
-        ...
-        buildConfigString 'API_KEY', buildProperties.secrets['apiKey']
-        ...
-    }
-```
-
-#### 2. Store a property value as generated string resource
-In any product flavor configuration (or `defaultConfig`) you can use
-`resValueProperty` as follows:
-
-```gradle
-    defaultConfig {
-        ...
-        resValueProperty 'api_key', buildProperties.secrets['apiKey']
-        ...
-    }
-```
-
-#### 3. Typed `buildConfigField` / `resValue`
-The plugin enhances the `buildConfigField` and `resValue` facilities to
-enforce types. To generate a string field in your `BuildConfig` you used to write:
 ```gradle
 buildConfigField 'String', 'LOL', '\"sometimes the picture take\"'
 ```
+
 but now you can instead write:
+
 ```gradle
 buildConfigString 'LOL', 'sometimes the picture take'
 ```
+
 The full list of new typed facilities is as follows:
 
 | | Example |
@@ -155,3 +155,40 @@ The full list of new typed facilities is as follows:
 |`resValueInt`| `resValueInt 'debug_test_int', 100`|
 |`resValueBoolean` | `resValueBoolean 'debug_test_bool', true`|
 |`resValueString` | `resValueString 'debug_test_string', 'dunno bro...'`|
+
+
+## Define Android product flavors using properties
+
+Using the plugin properties can be also injected into other gradle plugin extensions. 
+
+For example, Android `productFlavors` can be easily configured by first creating a method that configures a product flavor from 
+given properties:
+
+```gradle
+
+productFlavors.all { flavor ->
+    flavor.ext.from = { flavorProperties ->
+        println ">>> Configuring '${flavor.name}' flavor using '${flavorProperties.name}' build properties"
+        flavor.applicationId flavorProperties['applicationId'].string
+        flavor.versionCode flavorProperties['versionCode'].int
+        flavor.versionName flavorProperties['versionName'].string
+        .
+        .
+        .
+    }
+}
+```
+
+And then using it to configure the `productFlavors`: 
+
+```gradle
+
+productFlavors {
+    dev {
+        from buildProperties.dev
+    }
+    production {
+        from buildProperties.prod
+    }
+}
+```
