@@ -39,7 +39,6 @@ Add a `buildProperties` configuration to your build script listing
 all the properties files you intend to reference later on:
 ```gradle
 buildProperties {
-    
     secrets {
         using project.file('secrets.properties')
     }
