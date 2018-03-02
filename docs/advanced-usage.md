@@ -1,16 +1,24 @@
 # Advanced configuration
 
 The plugin supports a number of advanced behaviours. For example, it can be used to consume properties 
-from various external sources, fallbacks can be configured in case a given source doesn't have a certain property, 
-properties can be used in Android builds as `buildConfigField` and `resValue`.    
+from various external sources, fallbacks can be configured in case a given source doesn't have a certain property and 
+properties can be used in Android builds as `buildConfigField` and `resValue`.   
+
+For most features the sample project, which can be found on the [github repo](https://github.com/novoda/gradle-build-properties-plugin/tree/master/sample),
+provides fully working examples.  
 
 ## Table of contents
- * Different property sources 
+ * [Reading properties from different sources](#reading-properties-from-different-sources) 
  * Custom property source
  * Fallback/Chaining mechanism
  * Android build configuration variables
  * Android resource variables
  * Android property backed flavors
+ 
+ 
+## Reading properties from different sources
+
+The plugin comes with built in support for various sources for properties. 
 
 ## Features
 
