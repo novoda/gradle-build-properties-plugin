@@ -35,7 +35,6 @@ class ProjectPropertiesEntries extends Entries {
     }
 
 
-
     @Override
     Enumeration<String> getKeys() {
         return Collections.enumeration(project.properties.keySet())
