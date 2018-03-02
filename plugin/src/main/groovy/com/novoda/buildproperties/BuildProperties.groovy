@@ -39,6 +39,10 @@ class BuildProperties {
         entries.asMap()
     }
 
+    boolean contains(String key) {
+        chain.contains(key)
+    }
+
     void setDescription(String description) {
         factory.additionalMessage = description
     }
@@ -57,6 +61,10 @@ class BuildProperties {
 
     EntriesChain using(BuildProperties buildProperties) {
         newChain(buildProperties.entries)
+    }
+
+    EntriesChain using(Project project) {
+        newChain(project)
     }
 
     private EntriesChain newChain(def source) {

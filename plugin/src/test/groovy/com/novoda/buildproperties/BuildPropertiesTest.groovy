@@ -166,6 +166,30 @@ class BuildPropertiesTest {
         assertThat(project.buildProperties.chain['f']).hasValue('value_f')
     }
 
+    @Test
+    public void shouldReturnTrueWhenBuildPropertiesContainKey() {
+        environment.set('a', 'value_a')
+
+        project.buildProperties {
+            env {
+                using System.getenv()
+            }
+        }
+
+        assertThat(project.buildProperties.env.contains('a')).isTrue()
+    }
+
+    @Test
+    public void shouldReturnFalseWhenBuildPropertiesDoNotContainKey() {
+        project.buildProperties {
+            env {
+                using System.getenv()
+            }
+        }
+
+        assertThat(project.buildProperties.env.contains('unknown')).isFalse()
+    }
+
     private File newPropertiesFile(String fileName, String fileContent) {
         File propertiesFile = temp.newFile(fileName)
         propertiesFile.text = fileContent
