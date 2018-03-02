@@ -29,7 +29,7 @@ buildProperties {
         using System.getenv()
     }
     cli {
-        using project.properties
+        using project
     }
 }
 
