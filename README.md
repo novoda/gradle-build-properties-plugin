@@ -1,19 +1,18 @@
 # gradle-build-properties-plugin
 [![](https://ci.novoda.com/buildStatus/icon?job=gradle-build-properties-plugin)](https://ci.novoda.com/job/gradle-build-properties-plugin/lastSuccessfulBuild/console) [![](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE.txt) [![Bintray](https://api.bintray.com/packages/novoda/maven/gradle-build-properties-plugin/images/download.svg) ](https://bintray.com/novoda/maven/gradle-build-properties-plugin/_latestVersion)
 
-External properties files support for your build scripts.
+External properties support for your build scripts.
 
 ## Description
 
-Sometimes it's necessary to retrieve some information from a properties
-file that is not checked in as part of your repo for security reasons
-(keys, credentials, passwords, etc). Such properties need to end up in
-your application `BuildConfig` or in some resource file.
+Gradle builds are highly configurable through various properties. Rather than hardcoding these
+properties in your build scripts, for security reasons and in order to increase modularity, it's a
+common practice to provide these properties from external sources. 
 
 This plugin aims to provide a simple way to:
-- define handles to a properties file in your build script
-- generate fields in your `BuildConfig` with values from a properties file
-- generate resources with values from a properties file
+- consume properties from external and internal sources like cli, system properties, files etc.
+- define a custom source for properties
+- configure Android build with external properties 
 
 
 ## Adding to your project
