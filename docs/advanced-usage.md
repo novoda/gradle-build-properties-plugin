@@ -1,6 +1,8 @@
 # Advanced configuration
 
-Besides parametrized builds, the plugin supports a couple of advanced usages, especially for Android.
+The plugin supports a number of advanced behaviours. For example, it can be used to consume properties 
+from various external sources, fallbacks can be configured in case a given source doesn't have a certain property, 
+properties can be used in Android builds as `buildConfigField` and `resValue`.    
 
 ## Table of contents
  * Different property sources 
