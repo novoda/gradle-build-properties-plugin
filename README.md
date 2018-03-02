@@ -44,8 +44,12 @@ buildProperties {
     }
 }
 ```
-where `secrets.properties` is a properties file, containing key/value pairs, that can now be referenced
-in the build script as `buildProperties.secrets`:
+where `secrets.properties` is a properties file containing key/value pairs:
+```gradle
+secret_key=12345
+foo=bar
+```
+that can now be referenced in the build script as `buildProperties.secrets`:
 ```gradle
 boolean enabled = buildProperties.secrets['a'].boolean
 int count = buildProperties.secrets['b'].int
