@@ -1,8 +1,22 @@
 apply plugin: 'com.novoda.bintray-release'
+
+version = '0.3'
+String tag = "v$project.version"
+
 publish {
     userOrg = 'novoda'
     groupId = 'com.novoda'
     artifactId = 'gradle-build-properties-plugin'
-    publishVersion = '0.3'
+    publishVersion = project.version
     website = 'https://github.com/novoda/gradle-build-properties-plugin'
+}
+
+task publishRelease {
+    description = "Publish release for plugin version: $tag"
+    group = 'release'
+
+    if (project.hasProperty('dryRun') && project['dryRun'] == 'false') {
+        dependsOn bintrayUpload
+    }
+    
 }
