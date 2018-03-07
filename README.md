@@ -25,7 +25,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.novoda:gradle-build-properties-plugin:0.3'
+    classpath 'com.novoda:gradle-build-properties-plugin:0.3.9'
   }
 }
 ```
