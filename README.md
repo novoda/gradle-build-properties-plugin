@@ -3,6 +3,9 @@
 
 External properties support for your gradle builds.
 
+**Using the old `com.novoda:build-properties-plugin`?** You should [migrate away](docs/migrating-from-old-plugin.md)
+from it as soon as possible.
+
 ## Description
 
 Gradle builds are highly configurable through various properties. Rather than hardcoding these
