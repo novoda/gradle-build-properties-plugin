@@ -125,7 +125,9 @@ task publishRelease {
             }
         }
     } else {
-        dependsOn publishArtifacts
+        project.afterEvaluate {
+            dependsOn bintrayUpload
+        }
     }
 }
 
