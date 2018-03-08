@@ -140,6 +140,41 @@ class BuildPropertiesTest {
     }
 
     @Test
+    void shouldProvideSpecifiedErrorMessageWhenAccessingNonExistingPropertyUsingLegacyApi() {
+        File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
+
+        project.buildProperties {
+            test {
+                file(propertiesFile)
+            }
+        }
+
+        assertThat(project.buildProperties.test['d']).hasValue('value_d')
+        assertThat(project.buildProperties.test['e']).hasValue('value_e')
+        assertThat(project.buildProperties.test['f']).hasValue('value_f')
+    }
+
+    @Test
+    void shouldReturnPropertiesFileValuesUsingDeprecatedFileApi() {
+        File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
+
+        project.buildProperties {
+            test {
+                file(propertiesFile, "This is an error message")
+            }
+        }
+        
+        try {
+            project.buildProperties.test['a'].string
+            fail('Exception not thrown')
+        } catch (Exception e){
+            String message = e.getMessage()
+            assertThat(message).contains('Unable to find value for key \'a\' in properties set \'buildProperties.test\'.')
+            assertThat(message).contains('* buildProperties.test: This is an error message')
+        }
+    }
+
+    @Test
     void shouldReturnFallbackValuesWhenChainOfEntries() {
         File propertiesFile = newPropertiesFile('test.properties', 'd=value_d\ne=value_e\nf=value_f')
 
