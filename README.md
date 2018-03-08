@@ -19,8 +19,7 @@ This plugin aims to provide a simple way to:
 
 ## Adding to your project
 
-The plugin is deployed to Bintray's JCenter. Ensure it's correctly defined
-as a dependency for your build script:
+Apply the plugin from jCenter as a classpath dependency:
 
 ```gradle
 buildscript {
@@ -28,13 +27,19 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.novoda:gradle-build-properties-plugin:0.3.9'
+    classpath 'com.novoda:gradle-build-properties-plugin:0.4'
   }
 }
-```
-Then apply the plugin in your build script via:
-```gradle
+
 apply plugin: 'com.novoda.build-properties'
+```
+
+or from the Gradle Plugins Repository:
+
+```gradle
+plugins {
+    id 'com.novoda.build-properties' version '0.4'
+}
 ```
 
 ## Simple usage
@@ -74,3 +79,5 @@ A problem occurred configuring project ':app'.
 ## Advanced usage
 
 For more advanced configurations, please refer to the [advanced usage](docs/advanced-usage.md).
+
+The latest Groovydoc can be found [here](https://novoda.github.io/gradle-build-properties-plugin/docs/0.4/).
