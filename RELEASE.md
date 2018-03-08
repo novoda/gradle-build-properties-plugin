@@ -2,6 +2,7 @@
 
 1. Bump version code in `publish.gradle`.
 1. Update examples in `README.md` to use the latest version.
+1. Update link to Groovydoc in `README.md` to use the latest version.
 1. Create an entry in `CHANGELOG.md` containing the changes in that release. This entry needs to follow a certain pattern which can be found in `publish.gradle`. The changelog can be verified by executing the `printChangelog` task.
 1. Create a pull request to `develop` containing the above mentioned changes.
 1. Merge `develop` into `master`.

@@ -74,3 +74,5 @@ A problem occurred configuring project ':app'.
 ## Advanced usage
 
 For more advanced configurations, please refer to the [advanced usage](docs/advanced-usage.md).
+
+The latest Groovydoc can be found [here](https://novoda.github.io/gradle-build-properties-plugin/docs/0.4/).
