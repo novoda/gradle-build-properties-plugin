@@ -14,7 +14,6 @@ class BuildPropertiesPlugin implements Plugin<Project> {
                 return new BuildProperties(name, project)
             }
         })
-        container.create('env').entries(new EnvironmentPropertiesEntries(project))
         project.extensions.add('buildProperties', container)
 
         project.plugins.withId('com.android.application') {
@@ -28,79 +27,71 @@ class BuildPropertiesPlugin implements Plugin<Project> {
     private static void amendAndroidExtension(Project project) {
         def android = project.extensions.findByName("android")
         android.defaultConfig.with {
-            addBuildConfigSupportTo(it, project)
-            addResValueSupportTo(it, project)
+            addBuildConfigSupportTo(it)
+            addResValueSupportTo(it)
         }
 
         android.productFlavors.all {
-            addBuildConfigSupportTo(it, project)
-            addResValueSupportTo(it, project)
+            addBuildConfigSupportTo(it)
+            addResValueSupportTo(it)
         }
 
         android.buildTypes.all {
-            addBuildConfigSupportTo(it, project)
-            addResValueSupportTo(it, project)
-        }
-
-        android.signingConfigs.all {
-            addSigningConfigSupportTo(it)
+            addBuildConfigSupportTo(it)
+            addResValueSupportTo(it)
         }
     }
 
-    private static void addBuildConfigSupportTo(target, Project project) {
+    private static void addBuildConfigSupportTo(target) {
         def buildConfigField = { String type, String name, Closure<String> value ->
             target.buildConfigField type, name, value()
         }
 
-        target.ext.buildConfigBoolean = { String name, Boolean value ->
-            buildConfigField('boolean', name, { Boolean.toString(value) })
+        target.ext.buildConfigBoolean = { String name, def value ->
+            buildConfigField('boolean', name, {
+                return Boolean.toString(value instanceof Entry ? value.boolean : value)
+            })
         }
-        target.ext.buildConfigInt = { String name, Integer value ->
-            buildConfigField('int', name, { Integer.toString(value) })
+        target.ext.buildConfigInt = { String name, def value ->
+            buildConfigField('int', name, {
+                return Integer.toString(value instanceof Entry ? value.int : value)
+            })
         }
-        target.ext.buildConfigLong = { String name, Long value ->
-            buildConfigField('long', name, { "${Long.toString(value)}L" })
+        target.ext.buildConfigLong = { String name, def value ->
+            buildConfigField('long', name, {
+                return "${Long.toString(value instanceof Entry ? value.long : value)}L"
+            })
         }
-        target.ext.buildConfigDouble = { String name, Double value ->
-            buildConfigField('double', name, { Double.toString(value) })
+        target.ext.buildConfigDouble = { String name, def value ->
+            buildConfigField('double', name, {
+                return Double.toString(value instanceof Entry ? value.double : value)
+            })
         }
-        target.ext.buildConfigString = { String name, String value ->
-            buildConfigField('String', name, { "\"$value\"" })
-        }
-        target.ext.buildConfigProperty = { String name, Entry entry ->
-            project.afterEvaluate {
-                target.buildConfigField 'String', name, "\"${entry.string}\""
-            }
+        target.ext.buildConfigString = { String name, def value ->
+            buildConfigField('String', name, {
+                return "\"${value instanceof Entry ? value.string : value}\""
+            })
         }
     }
 
-    private static void addResValueSupportTo(target, Project project) {
+    private static void addResValueSupportTo(target) {
         def resValue = { String type, String name, Closure<String> value ->
             target.resValue type, name, value()
         }
-        target.ext.resValueBoolean = { String name, Boolean value ->
-            resValue('bool', name, { Boolean.toString(value) })
+        target.ext.resValueBoolean = { String name, def value ->
+            resValue('bool', name, {
+                return Boolean.toString(value instanceof Entry ? value.boolean : value)
+            })
         }
-        target.ext.resValueInt = { String name, Integer value ->
-            resValue('integer', name, { Integer.toString(value) })
+        target.ext.resValueInt = { String name, def value ->
+            resValue('integer', name, {
+                return Integer.toString(value instanceof Entry ? value.int : value)
+            })
         }
-        target.ext.resValueString = { String name, String value ->
-            resValue('string', name, { "\"$value\"" })
-        }
-        target.ext.resValueProperty = { String name, Entry entry ->
-            project.afterEvaluate {
-                target.resValue 'string', name, "\"${entry.string}\""
-            }
-        }
-    }
-
-    private static void addSigningConfigSupportTo(target) {
-        target.ext.signingConfigProperties = { BuildProperties buildProperties ->
-            target.storeFile new File(buildProperties.parentFile, buildProperties['storeFile'].string)
-            target.storePassword buildProperties['storePassword'].string
-            target.keyAlias buildProperties['keyAlias'].string
-            target.keyPassword buildProperties['keyPassword'].string
+        target.ext.resValueString = { String name, def value ->
+            resValue('string', name, {
+                return "\"${value instanceof Entry ? value.string : value}\""
+            })
         }
     }
-
 }

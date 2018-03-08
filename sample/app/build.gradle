@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
@@ -9,65 +9,80 @@ apply plugin: com.novoda.buildproperties.BuildPropertiesPlugin
 
 buildProperties {
     notThere {
-        file rootProject.file('whatever'), '''
-      This file actually doesn't exists. This is used to show properties files are lazy-loaded.
-    '''
+        using rootProject.file('whatever')
+        description =   'This file actually doesn\'t exist. This properties set is used to show how\n' +
+                        'properties files are lazy loaded.'
     }
     secrets {
-        file rootProject.file('properties/secrets.properties')
+        using rootProject.file('properties/secrets.properties')
     }
     resValues {
-        file rootProject.file('properties/resValues.properties')
+        using rootProject.file('properties/resValues.properties')
     }
     debugSigning {
-        file rootProject.file('properties/debugSigning.properties')
+        using rootProject.file('properties/debugSigning.properties')
     }
     releaseSigning {
-        file rootProject.file('properties/releaseSigning.properties')
+        using rootProject.file('properties/releaseSigning.properties')
+    }
+    env {
+        using System.getenv()
+    }
+    cli {
+        using project
     }
 }
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '24.0.2'
 
     defaultConfig {
-        applicationId "com.novoda.buildpropertiesplugin.sample"
+        applicationId 'com.novoda.buildpropertiesplugin.sample'
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
-        buildConfigBoolean 'TEST_BOOLEAN', false
-        buildConfigInt 'TEST_INT', 42
-        buildConfigLong 'TEST_LONG', Long.MAX_VALUE
-        buildConfigDouble 'TEST_DOUBLE', Math.PI
-        buildConfigString 'TEST_STRING', "whateva"
-        buildConfigProperty 'OVERRIDABLE', buildProperties.secrets['overridable']
-        buildConfigProperty 'GOOGLE_MAPS_KEY', buildProperties.secrets['googleMapsKey']
-        buildConfigProperty 'SUPER_SECRET', buildProperties.secrets['superSecret']
-        buildConfigProperty 'FOO', buildProperties.secrets['notThere'].or(buildProperties.notThere['foo']).or('bar')
-        buildConfigProperty 'WAT', buildProperties.env['WAT'].or('?!?')
+        versionName '1.0'
+        buildConfigBoolean 'TEST_BOOLEAN', buildProperties.secrets['notThere'].or(false)
+        buildConfigInt 'TEST_INT', buildProperties.secrets['notThere'].or(42)
+        buildConfigLong 'TEST_LONG', buildProperties.secrets['notThere'].or(Long.MAX_VALUE)
+        buildConfigDouble 'TEST_DOUBLE', buildProperties.secrets['notThere'].or(Math.PI)
+        buildConfigString 'TEST_STRING', 'whateva'
+        buildConfigString 'OVERRIDABLE', buildProperties.cli['overridable'].or(buildProperties.secrets['overridable'])
+        buildConfigString 'GOOGLE_MAPS_KEY', buildProperties.secrets['googleMapsKey']
+        buildConfigString 'SUPER_SECRET', buildProperties.secrets['superSecret']
+        buildConfigString 'FOO', buildProperties.secrets['notThere'].or(buildProperties.notThere['foo']).or('bar')
+        buildConfigString 'WAT', buildProperties.env['WAT'].or('?!?')
+    }
+
+    signingConfigs.all { signingConfig ->
+        signingConfig.ext.from = { buildProperties ->
+            signingConfig.storeFile rootProject.file("properties/${buildProperties['storeFile'].string}")
+            signingConfig.storePassword buildProperties['storePassword'].string
+            signingConfig.keyAlias buildProperties['keyAlias'].string
+            signingConfig.keyPassword buildProperties['keyPassword'].string
+        }
     }
 
     signingConfigs {
         debug {
-            signingConfigProperties buildProperties.debugSigning
+            from buildProperties.debugSigning
         }
         release {
-            signingConfigProperties buildProperties.releaseSigning
+            from buildProperties.releaseSigning
         }
     }
 
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            buildConfigProperty 'ONLY_DEBUG', buildProperties.secrets['superSecret']
-            resValueInt 'debug_test_int', 100
-            resValueBoolean 'debug_test_bool', true
+            buildConfigString 'ONLY_DEBUG', buildProperties.secrets['superSecret']
+            resValueInt 'debug_test_int', buildProperties.secrets['notThere'].or(100)
+            resValueBoolean 'debug_test_bool', buildProperties.secrets['notThere'].or(true)
             resValueString 'debug_test_string', 'dunno bro...'
-            resValueProperty 'super_secret', buildProperties.secrets['superSecret']
-            resValueProperty 'google_maps_key', buildProperties.resValues['google_maps_key']
-            resValueProperty 'another_key', buildProperties.resValues['another_key']
+            resValueString 'super_secret', buildProperties.secrets['superSecret']
+            resValueString 'google_maps_key', buildProperties.resValues['google_maps_key']
+            resValueString 'another_key', buildProperties.resValues['another_key']
         }
         release {
             minifyEnabled false

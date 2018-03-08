@@ -1,5 +1,6 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.BuildPropertiesException
 import org.junit.Test
 
 import static com.novoda.buildproperties.test.EntrySubject.assertThat
@@ -10,7 +11,7 @@ class EntryTest {
     private static final RuntimeException EXCEPTION_2 = new RuntimeException("exception 2")
 
     @Test
-    public void shouldReturnFirstEntryValueInOrWhenFirstEntryValueDoesNotThrow() {
+    void shouldReturnFirstEntryValueInOrWhenFirstEntryValueDoesNotThrow() {
         Entry entry1 = new Entry('key1', { 'value1' })
         Entry entry2 = new Entry('key2', { 'value2' })
 
@@ -20,7 +21,7 @@ class EntryTest {
     }
 
     @Test
-    public void shouldReturnSecondEntryValueInOrWhenFirstEntryValueThrows() {
+    void shouldReturnSecondEntryValueInOrWhenFirstEntryValueThrows() {
         Entry entry1 = new Entry('key1', { throw EXCEPTION_1 })
         Entry entry2 = new Entry('key2', { 'value2' })
 
@@ -30,17 +31,17 @@ class EntryTest {
     }
 
     @Test
-    public void shouldThrowWhenFirstAndSecondEntryValueThrow() {
+    void shouldThrowWhenFirstAndSecondEntryValueThrow() {
         Entry entry1 = new Entry('key1', { throw EXCEPTION_1 })
         Entry entry2 = new Entry('key2', { throw EXCEPTION_2 })
 
         Entry entryWithFallback = entry1.or(entry2)
 
-        assertThat(entryWithFallback).willThrow(CompositeException.from(EXCEPTION_1).add(EXCEPTION_2))
+        assertThat(entryWithFallback).willThrow(BuildPropertiesException.from(EXCEPTION_1).add(EXCEPTION_2))
     }
 
     @Test
-    public void shouldReturnEvaluatedClosureWhenFirstEntryValueThrows() {
+    void shouldReturnEvaluatedClosureWhenFirstEntryValueThrows() {
         Entry entry = new Entry('key', { throw EXCEPTION_1 })
         def fallback = { 'fallback' }
 
@@ -50,7 +51,7 @@ class EntryTest {
     }
 
     @Test
-    public void shouldReturnValueWhenFirstEntryValueThrows() {
+    void shouldReturnValueWhenFirstEntryValueThrows() {
         Entry entry = new Entry('key', { throw EXCEPTION_1 })
 
         Entry entryWithFallback = entry.or('fallback')

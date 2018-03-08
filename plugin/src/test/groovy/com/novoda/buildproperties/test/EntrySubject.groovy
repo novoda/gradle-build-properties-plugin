@@ -4,12 +4,12 @@ import com.google.common.truth.FailureStrategy
 import com.google.common.truth.Subject
 import com.google.common.truth.SubjectFactory
 import com.google.common.truth.Truth
-import com.novoda.buildproperties.CompositeException
+import com.novoda.buildproperties.internal.BuildPropertiesException
 import com.novoda.buildproperties.Entry
 
 import javax.annotation.Nullable
 
-public final class EntrySubject extends Subject<EntrySubject, Entry> {
+final class EntrySubject extends Subject<EntrySubject, Entry> {
 
     private static final SubjectFactory<EntrySubject, Entry> FACTORY = new SubjectFactory<EntrySubject, Entry>() {
         @Override
@@ -18,7 +18,7 @@ public final class EntrySubject extends Subject<EntrySubject, Entry> {
         }
     }
 
-    public static EntrySubject assertThat(Entry entry) {
+    static EntrySubject assertThat(Entry entry) {
         Truth.assertAbout(FACTORY).that(entry)
     }
 
@@ -26,7 +26,7 @@ public final class EntrySubject extends Subject<EntrySubject, Entry> {
         super(failureStrategy, subject)
     }
 
-    public void willThrow(Class<? extends Throwable> throwableClass) {
+    void willThrow(Class<? extends Throwable> throwableClass) {
         try {
             entryValue
             fail('throws', throwableClass)
@@ -39,16 +39,16 @@ public final class EntrySubject extends Subject<EntrySubject, Entry> {
         actual().string
     }
 
-    public void willThrow(CompositeException compositeException) {
+    void willThrow(BuildPropertiesException compositeException) {
         try {
             entryValue
             fail('throws', compositeException)
-        } catch (CompositeException thrown) {
+        } catch (BuildPropertiesException thrown) {
             check().that(thrown.message).isEqualTo(compositeException.message)
         }
     }
 
-    public void hasValue(def expected) {
+    void hasValue(def expected) {
         check().that(entryValue).isEqualTo(expected)
     }
 

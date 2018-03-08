@@ -4,16 +4,19 @@ abstract class Entries {
 
     abstract boolean contains(String key)
 
-    protected abstract Object getValueAt(String key)
-
-    Entry getAt(String key) {
-        new Entry(key, {
-            getValueAt(key)
-        })
-    }
-
-    abstract File getParentFile()
+    abstract Entry getAt(String key)
 
     abstract Enumeration<String> getKeys()
 
+    final Map<String, Entry> asMap() {
+        Map<String, Entry> entryMap = keys.toList().collectEntries {
+            [(it): this[it]]
+        }
+        Collections.unmodifiableMap(entryMap)
+    }
+
+    interface Factory {
+
+        Entries from(def source)
+    }
 }

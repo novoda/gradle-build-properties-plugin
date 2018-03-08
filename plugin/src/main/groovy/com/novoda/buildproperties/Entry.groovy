@@ -1,5 +1,7 @@
 package com.novoda.buildproperties
 
+import com.novoda.buildproperties.internal.BuildPropertiesException
+
 class Entry {
 
     private final String key
@@ -22,6 +24,10 @@ class Entry {
         getValue() as Integer
     }
 
+    Long getLong() {
+        getValue() as Long
+    }
+
     Double getDouble() {
         getValue() as Double
     }
@@ -30,7 +36,7 @@ class Entry {
         getValue() as String
     }
 
-    private Object getValue() {
+    Object getValue() {
         value.call()
     }
 
@@ -43,7 +49,7 @@ class Entry {
                 try {
                     return other.call()
                 } catch (Throwable e2) {
-                    throw CompositeException.from(e).add(e2)
+                    throw BuildPropertiesException.from(e).add(e2)
                 }
             }
         })

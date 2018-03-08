@@ -1,84 +1,95 @@
 package com.novoda.buildproperties
 
-import org.gradle.api.GradleException
+import com.novoda.buildproperties.internal.DefaultEntriesFactory
+import com.novoda.buildproperties.internal.DefaultExceptionFactory
 import org.gradle.api.Project
+import org.gradle.api.logging.Logger
 
 class BuildProperties {
 
     private final String name
-    private final Project project
-    private Entries entries
+    private final DefaultEntriesFactory factory
+    private final Logger logger
+    private EntriesChain chain
 
     BuildProperties(String name, Project project) {
         this.name = name
-        this.project = project
+        this.logger = project.logger
+        this.factory = new DefaultEntriesFactory(logger, new DefaultExceptionFactory(name))
     }
 
     String getName() {
         name
     }
 
-    void file(File file, String errorMessage = null) {
-        entries(LazyEntries.from {
-            if (!file.exists()) {
-                throw new GradleException("File $file.name does not exist.${errorMessage ? "\n$errorMessage" : ''}")
-            }
-            FilePropertiesEntries.create(name, file)
-        })
-    }
-
-    void entries(Entries entries) {
-        this.entries = entries
-    }
-
-    File getParentFile() {
-        entries.parentFile
+    Entries getEntries() {
+        chain
     }
 
     Enumeration<String> getKeys() {
-        entries.keys
+        chain.keys
+    }
+
+    ExceptionFactory getExceptionFactory() {
+        exceptionFactory
     }
 
     Entry getAt(String key) {
-        entries.getAt(key)
+        chain.getAt(key)
     }
 
-    private static class LazyEntries extends Entries {
-
-        private final Closure<Entries> entriesProvider
-
-        static LazyEntries from(Closure<Entries> entriesProvider) {
-            new LazyEntries(entriesProvider)
-        }
-
-        private LazyEntries(Closure<Entries> entriesProvider) {
-            this.entriesProvider = entriesProvider.memoize()
-        }
-
-        private Entries getEntries() {
-            entriesProvider.call()
-        }
-
-        @Override
-        boolean contains(String key) {
-            entries.contains(key)
-        }
-
-        @Override
-        protected Object getValueAt(String key) {
-            entries.getValueAt(key)
-        }
-
-        @Override
-        File getParentFile() {
-            entries.getParentFile()
-        }
-
-        @Override
-        Enumeration<String> getKeys() {
-            entries.getKeys()
-        }
-
+    Map<String, Entry> asMap() {
+        entries.asMap()
     }
 
+    boolean contains(String key) {
+        chain.contains(key)
+    }
+
+    void setDescription(String description) {
+        factory.additionalMessage = description
+    }
+
+    EntriesChain using(Map<String, Object> map) {
+        newChain(map)
+    }
+
+    EntriesChain using(File file) {
+        newChain(file)
+    }
+
+    EntriesChain using(Entries entries) {
+        newChain(entries)
+    }
+
+    EntriesChain using(BuildProperties buildProperties) {
+        newChain(buildProperties.entries)
+    }
+
+    EntriesChain using(Project project) {
+        newChain(project)
+    }
+
+    @Deprecated
+    EntriesChain file(File file, String description = '') {
+        logger.warn("""/!\\ WARNING /!\\ Detected use of 'file' method to consume build properties from a file. 
+                       |                 This api is deprecated and will be removed in an upcoming release, please use using() instead.
+                       |                 For instance you could do:
+                       |                 
+                       |                    buildProperties {
+                       |                        using secrets.properties
+                       |                    }
+                       |
+                       |""".stripMargin())
+
+        if (!description.isEmpty()) {
+            setDescription description
+        }
+        newChain(file)
+    }
+
+    private EntriesChain newChain(def source) {
+        chain = new EntriesChain(factory, source)
+        return chain
+    }
 }
