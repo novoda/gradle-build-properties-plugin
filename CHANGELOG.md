@@ -4,7 +4,7 @@ Change Log
 [Version 0.4.1](https://github.com/novoda/gradle-build-properties-plugin/releases/tag/v0.4.1)
 --------------------------
 
-- Remove `@Deprecated` annotation for BuildProperties.file build properties through project properties ([#PR59](https://github.com/novoda/gradle-build-properties-plugin/pull/59)).
+- Remove `@Deprecated` annotation for `BuildProperties.file()` ([#PR59](https://github.com/novoda/gradle-build-properties-plugin/pull/59)).
 
 [Version 0.4](https://github.com/novoda/gradle-build-properties-plugin/releases/tag/v0.4)
 --------------------------
