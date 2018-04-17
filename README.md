@@ -27,7 +27,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.novoda:gradle-build-properties-plugin:0.4'
+    classpath 'com.novoda:gradle-build-properties-plugin:0.4.1'
   }
 }
 
@@ -38,7 +38,7 @@ or from the Gradle Plugins Repository:
 
 ```gradle
 plugins {
-    id 'com.novoda.build-properties' version '0.4'
+    id 'com.novoda.build-properties' version '0.4.1'
 }
 ```
 
@@ -80,4 +80,3 @@ A problem occurred configuring project ':app'.
 
 For more advanced configurations, please refer to the [advanced usage](docs/advanced-usage.md).
 
-The latest Groovydoc can be found [here](https://novoda.github.io/gradle-build-properties-plugin/docs/0.4/).
