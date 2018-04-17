@@ -70,7 +70,6 @@ class BuildProperties {
         newChain(project)
     }
 
-    @Deprecated
     EntriesChain file(File file, String description = '') {
         logger.warn("""/!\\ WARNING /!\\ Detected use of 'file' method to consume build properties from a file. 
                        |                 This api is deprecated and will be removed in an upcoming release, please use using() instead.
