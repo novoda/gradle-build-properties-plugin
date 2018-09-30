@@ -1,11 +1,12 @@
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.novoda:gradle-build-properties-plugin:local'
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: com.novoda.buildproperties.BuildPropertiesPlugin
+apply plugin: 'com.novoda.build-properties'
 
 buildProperties {
     notThere {
