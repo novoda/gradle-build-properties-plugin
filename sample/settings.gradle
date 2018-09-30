@@ -1,2 +1,8 @@
 rootProject.name = 'gradle-build-properties-plugin-sample'
 include ':app'
+
+includeBuild('../') {
+    dependencySubstitution {
+        substitute module('com.novoda:gradle-build-properties-plugin') with project(':plugin')
+    }
+}
